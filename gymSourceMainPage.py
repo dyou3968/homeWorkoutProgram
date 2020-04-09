@@ -45,3 +45,5 @@ def recursiveRemoveExtraWhiteSpace(L):
             return rest
         else:
             return [firstItem.strip()] + rest
+
+print(getGymSourceCategoriesAndItemsFromHTML(retrieveURLInfo()))

@@ -21,7 +21,7 @@ def getWorkoutData():
 
 def cleanUpText(text):
     # Returns a cleaned up string without the "\xa0" values from web scraping
-    return "".join(text.split("\xa0"))
+    return " ".join(text.split("\xa0"))
 
 def convertHTMLToDictionary(key = None):
     # Converts the html code into a Python dictionary
