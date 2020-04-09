@@ -32,9 +32,6 @@ class WorkoutGenerator(object):
         self.workoutDuration = 20 # minutes
         self.restTime = 30 # seconds of rest between each set
         self.reps = 20 # Should be based on the exercise, and everything else
-    
-
-
 
 legWorkout = WorkoutGenerator("David You", 160,"male",19,"medium","legs","high")
 
