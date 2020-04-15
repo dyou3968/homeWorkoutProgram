@@ -416,6 +416,7 @@ def transposeMatrix(matrix):
     return newMatrix
 
 def addInVariables(matrix):
+    # Adds in variables x1, x2, ... to the matrix corresponding to that column
     rows, cols = len(matrix), len(matrix[0])
     for row in range(rows):
         for col in range(cols-1):
@@ -446,6 +447,7 @@ def makeEquationList(equation):
     return newEquation
 
 def changeEquationIntoString(matrix,row):
+    # Changes the equation into a string
     equation = matrix[row]
     newEquation = makeEquationList(equation)
     newEquationString = " ".join(newEquation)

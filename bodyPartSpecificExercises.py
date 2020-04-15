@@ -1,4 +1,4 @@
-from exercises import *
+from exercisesDict import *
 
 exerciseCategoryDict = convertHTMLToDictionary(key = None)
 
