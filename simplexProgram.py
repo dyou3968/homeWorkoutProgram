@@ -266,7 +266,7 @@ def largestConstraint(pivotColList,numColList):
     # Takes in two different columns and returns the
     # value in the pivot column and row where the biggest constraint occurs
     # If two constraints are the same, then it returns the upmost one
-    mostStringent = numColList[0] # Smallest value, the given values should never be <0
+    mostStringent = 10**10 # Smallest value, the given values should never be <0
     constraintRow = 0
     for i in range(len(pivotColList)):
         pivotVal = pivotColList[i]
@@ -275,7 +275,7 @@ def largestConstraint(pivotColList,numColList):
             constraint = numVal/pivotVal
             if constraint < mostStringent:
                 mostStringent = constraint
-                constraintRow = i
+                constraintRow = i             
     val = pivotColList[constraintRow]
     return (val,constraintRow,mostStringent)
 
@@ -304,34 +304,59 @@ def makePivotOne(pivotVal,pivotRow,matrix):
     return newPivotRowList
 
 def calculateNewRow(negativeMultiplier,otherRowList,pivotRowList):
+    # Calculates the new row based on the pivot row and the original other row
     newOtherRow = []
     for i in range(len(pivotRowList)):
         pivotRowEntry = pivotRowList[i]
         otherRowEntry = otherRowList[i]
         newOtherRowEntry = (negativeMultiplier*pivotRowEntry) + otherRowEntry
-        newOtherRow.append(newOtherRowEntry)
+        newOtherRow.append(round(newOtherRowEntry,2))
     return newOtherRow
 
+def getPivotAdjustedRow(matrix,row,pivotRow,pivotCol):
+    # Changes the other row so that it has a 0 in the pivot column
+    negativeMultiplier = -(matrix[row][pivotCol])
+    newRow = calculateNewRow(negativeMultiplier,matrix[row],matrix[pivotRow])
+    return newRow
 
-def simplexAlgorithm(problem):
-    # Can this be done recursively???
-    matrix = createSimplexTalbeau(problem)
-    rows, lastRow = len(matrix), matrix[-1]
-    while min(lastRow) < 0:
+def simplexAlgorithm(matrix, depth = 0):
+    # Recursively applies the simplex algorithm until all values in 
+    # The last row are greater than 0
+    rows, cols = len(matrix), len(matrix[0])
+    lastRow = matrix[-1]
+    if min(lastRow) >= 0:
+        return matrix
+    else:
         (pivotVal,pivotRow,pivotCol) = getPivot(matrix)
         newPivotRowList = makePivotOne(pivotVal,pivotRow,matrix)
         matrix[pivotRow] = newPivotRowList
         for row in range(1,pivotRow):
-            negativeMultiplier = -(matrix[row][pivotCol])
-            newRow = calculateNewRow(negativeMultiplier,matrix[row],matrix[pivotRow])
+            newRow = getPivotAdjustedRow(matrix,row,pivotRow,pivotCol)
             matrix[row] = newRow
         for row in range(pivotRow + 1,rows):
-            negativeMultiplier = -(matrix[row][pivotCol])
-            negativeMultiplier = -(matrix[row][pivotCol])
-            newRow = calculateNewRow(negativeMultiplier,matrix[row],matrix[pivotRow])
+            newRow = getPivotAdjustedRow(matrix,row,pivotRow,pivotCol)
             matrix[row] = newRow
-        return matrix
+        return simplexAlgorithm(matrix,depth+1)
 
+def simplexAlgorithmWrapper(problem):
+    # Wrapper Function for the simplex algorithm
+    matrix = createSimplexTalbeau(problem)
+    optimizedMatrix = simplexAlgorithm(matrix)
+    return optimizedMatrix
+
+def getOptimizedValue(problem):
+    # Takes in an optimized matrix and returns the optimized value
+    optimizedMatrix = simplexAlgorithmWrapper(problem)
+    rows,cols = len(optimizedMatrix), len(optimizedMatrix[0])
+    lastRow,lastCol = rows-1,cols-1
+    optimizedValue = optimizedMatrix[lastRow][lastCol]
+    # If you want to see the 2d matrix, uncomment the next line
+    # print(print2dList(optimizedMatrix))
+    return optimizedValue
+
+
+
+"""
 problem = '''
 Maximize: 2x1 + 5x2 = z
 Constraints:
@@ -341,30 +366,6 @@ x1 + 2x2 <= 9
 x1, x2 >= 0
 '''
 
-problem4 = '''
-Maximize: x1 + x2 = z
-Constraints:
-x1 + x2 <= 8
-2x1 + x2 <= 10
-x1, x2 >= 0
-'''
-# otherRowList = [1, 1, 1, 0, 0, 0, 6]
-# pivotRowList = [0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 3.0]
-# negativeMultiplier = -1
-
-#print(calculateNewRow(negativeMultiplier,otherRowList,pivotRowList))
-
-matrix = (simplexAlgorithm(problem))
-print(print2dList(matrix))
-
-matrix = (simplexAlgorithm(problem4))
-#print(print2dList(matrix))
-
-# matrix = createSimplexTalbeau(problem)
-# #print(getPivot(createSimplexTalbeau(problem)))
-# print(makePivotOne(1,2,matrix))
-
-"""
 problem1 = '''
 Maximize: 8x1 + 10x2 + 7x3 = z
 Constraints:
@@ -391,16 +392,16 @@ Constraints:
 x1, x2 >= 0
 '''
 
-
-
-# print(getPivot(createSimplexTalbeau(problem)))
-# print(getPivot(createSimplexTalbeau(problem1)))
-# print(getPivot(createSimplexTalbeau(problem2)))
-#matrix = createSimplexTalbeau(problem3)
-#print(getPivot(createSimplexTalbeau(problem3)))
-#print(print2dList(matrix))
+problem4 = '''
+Maximize: x1 + x2 = z
+Constraints:
+x1 + x2 <= 8
+2x1 + x2 <= 10
+x1, x2 >= 0
+'''
 
 """
+
 
 
 #################################################
@@ -675,6 +676,46 @@ x1, x2 >= 0
     assert(getColWithMostNegVal(matrix) == (1,'x2'))
     print('Passed!')
 
+
+def testGetOptimizedValue():
+    print('Testing getOptimizedValue()...', end='')
+    problem = '''
+Maximize: 2x1 + 5x2 = z
+Constraints:
+x1 + x2 <= 6
+x2 <= 3
+x1 + 2x2 <= 9
+x1, x2 >= 0
+'''
+    assert(getOptimizedValue(problem) == 21)
+    problem1 = '''
+Maximize: 8x1 + 10x2 + 7x3 = z
+Constraints:
+x1 + 3x2 + 2x3 <= 10
+x1 + 5x2 + x3 <= 8
+x1, x2, x3 >= 0
+'''
+    assert(getOptimizedValue(problem1) == 64)
+    problem2 = '''
+Maximize: 15x1 + 10x2 = z
+Constraints:
+x1 <= 2
+x2 <= 3
+x1 + x2 <= 4
+x1, x2 >= 0
+'''
+    assert(getOptimizedValue(problem2) == 50)
+    problem3 = '''
+Maximize: 2x1 + 3x2 = z
+Constraints:
+2x1 + x2 <= 18
+6x1 + 5x2 <= 60
+2x1 + 5x2 <= 40
+x1, x2 >= 0
+'''
+    assert(getOptimizedValue(problem3) == 28)
+    print('Passed!')
+
 def testAll():
     testRemoveOperators()
     testGetKeyInformation()
@@ -683,5 +724,6 @@ def testAll():
     testCreateSimplexTalbeau()
     testGetCol()
     testGetColWithMostNegVal()
+    testGetOptimizedValue()
 
-#testAll()
+testAll()
