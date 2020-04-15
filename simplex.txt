@@ -1,0 +1,25 @@
+
+"""
+Note: If it's a minimization, turn it into a maximization
+
+Steps for Minimum: 
+1. put coefficients into a matrix (minimization function as well)
+    where ax1 + bx2 = c
+2. transpose the matrix
+3. restate the problem as a maximization 
+
+Steps for Maximum:
+1. Add slack variables
+2. Create simplex tableau
+3. Find the most negative coefficient in the maximization
+4. Find the smallest number when the right column / numbers in the column of the most negative coefficient (Pivot)
+5. Make the pivot 1
+6. Do calculations such that every other row has a 0 in that column
+7. Repeat steps 3-6 until there are no negative values in the bottom
+8. Get the non basic- variables and the max value
+9. Check to see if the values fit the constraints 
+"""
+
+# Make it for an arbitrary number of functions and constraints
+
+# Burn calories per day 
