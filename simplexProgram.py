@@ -50,6 +50,7 @@ def print2dList(a):
 # https://www.youtube.com/watch?v=iwDiG2mR6FM
 # https://www.geeksforgeeks.org/simplex-algorithm-tabular-method/
 # http://fourier.eng.hmc.edu/e176/lectures/NM/node32.html
+# http://www.ms.uky.edu/~rwalker/Class%20Work%20Solutions/class%20work%208%20solutions
 
 import string
 import copy
@@ -98,13 +99,45 @@ def flipOptimizationFunctionSigns(L):
     # Takes in the optimization function list and flips the signs
     for i in range(len(L)):
         entry = L[i]
-        if (entry != 'z'):
+        if (entry != 'z') and ('x' in entry):
             if entry[0] == "-":
                 L[i] = entry[1:]
                 entry = entry[1:]
             else:
                 L[i] = "-" + entry
     return L
+
+def checkEasyChangeMinToMax(initialConstraints):
+    # Checks to ensure that the all the constraints have linear expressions
+    # With the variables less than or equal to a constant
+    modifiedConstraints = initialConstraints[:-1]
+    for constraint in modifiedConstraints:
+        if ("<=" not in constraint):
+            return False
+    return True
+
+def easyChangeMinToMax(optimizationFunction):
+    # If the constraints involve linear expressions with the variables 
+    # less than or equal to a constant. I use the trick that minimizing 
+    # this function C is the same as maximizing the function p = −z
+    optimizationFunctionList = optimizationFunction.split(" ")
+    flipOptimizationFunctionSigns(optimizationFunctionList)
+    optimizationFunctionList[0] = "Maximize:"
+    newOptimiztionFunction = " ".join(optimizationFunctionList)
+    return newOptimiztionFunction
+
+
+
+problem8 = '''
+Minimize: 3x1 + 9x2 = z
+Constraints:
+2x1 + x2 >= 8
+x1 + 2x2 >= 8
+x1, x2 >= 0
+'''
+
+
+
 
 def getKeyInformation(problem):
     # Given a text, the function returns the a 2d List of the key information
@@ -118,15 +151,18 @@ def getKeyInformation(problem):
     # This bound is not used in the simplex tableau
     initialConstraints = textList[3:-1]
 
+
+    # If I start out with a minimization function, I want to change it 
+    # To a maximization function
+    if "Min" in optimizationFunction:
+        if checkEasyChangeMinToMax(initialConstraints):
+            optimizationFunction = easyChangeMinToMax(optimizationFunction)
+        else:
+            
+
+
     # I remove the extra words from the optimization line
     optimizationFunction = removeExtraWords(optimizationFunction.split(" "))
-
-    # I check to make sure all constraints are in the form Ax <= b
-    # If one is not, then I change it to match the form
-
-
-    #WRITE THIS OUT AFTERWARD
-
 
     # I want to remove all the operators and add a "-" sign to the next value if it's negative
     cleanedOptimizationFunction = removeOperators(optimizationFunction)
@@ -273,7 +309,7 @@ def largestConstraint(pivotColList,numColList):
         numVal = numColList[i]
         if (pivotVal != 0):
             constraint = numVal/pivotVal
-            if constraint < mostStringent:
+            if (constraint < mostStringent) and (constraint >= 0):
                 mostStringent = constraint
                 constraintRow = i             
     val = pivotColList[constraintRow]
@@ -299,7 +335,7 @@ def makePivotOne(pivotVal,pivotRow,matrix):
     multiplier = 1/pivotVal
     for value in pivotRowList:
         newValue = value*multiplier
-        newValue = round(newValue,2)
+        newValue = round(newValue,3)
         newPivotRowList.append(newValue)
     return newPivotRowList
 
@@ -310,7 +346,7 @@ def calculateNewRow(negativeMultiplier,otherRowList,pivotRowList):
         pivotRowEntry = pivotRowList[i]
         otherRowEntry = otherRowList[i]
         newOtherRowEntry = (negativeMultiplier*pivotRowEntry) + otherRowEntry
-        newOtherRow.append(round(newOtherRowEntry,2))
+        newOtherRow.append(round(newOtherRowEntry,3))
     return newOtherRow
 
 def getPivotAdjustedRow(matrix,row,pivotRow,pivotCol):
@@ -319,7 +355,7 @@ def getPivotAdjustedRow(matrix,row,pivotRow,pivotCol):
     newRow = calculateNewRow(negativeMultiplier,matrix[row],matrix[pivotRow])
     return newRow
 
-def simplexAlgorithm(matrix, depth = 0):
+def simplexAlgorithm(matrix):
     # Recursively applies the simplex algorithm until all values in 
     # The last row are greater than 0
     rows, cols = len(matrix), len(matrix[0])
@@ -336,7 +372,7 @@ def simplexAlgorithm(matrix, depth = 0):
         for row in range(pivotRow + 1,rows):
             newRow = getPivotAdjustedRow(matrix,row,pivotRow,pivotCol)
             matrix[row] = newRow
-        return simplexAlgorithm(matrix,depth+1)
+        return simplexAlgorithm(matrix)
 
 def simplexAlgorithmWrapper(problem):
     # Wrapper Function for the simplex algorithm
@@ -349,58 +385,15 @@ def getOptimizedValue(problem):
     optimizedMatrix = simplexAlgorithmWrapper(problem)
     rows,cols = len(optimizedMatrix), len(optimizedMatrix[0])
     lastRow,lastCol = rows-1,cols-1
-    optimizedValue = optimizedMatrix[lastRow][lastCol]
+    optimizedValue = round(optimizedMatrix[lastRow][lastCol])
     # If you want to see the 2d matrix, uncomment the next line
-    # print(print2dList(optimizedMatrix))
+    #print(print2dList(optimizedMatrix))
+    if "Min" in problem:
+        return -1*optimizedValue
     return optimizedValue
 
 
 
-"""
-problem = '''
-Maximize: 2x1 + 5x2 = z
-Constraints:
-x1 + x2 <= 6
-x2 <= 3
-x1 + 2x2 <= 9
-x1, x2 >= 0
-'''
-
-problem1 = '''
-Maximize: 8x1 + 10x2 + 7x3 = z
-Constraints:
-x1 + 3x2 + 2x3 <= 10
-x1 + 5x2 + x3 <= 8
-x1, x2, x3 >= 0
-'''
-
-problem2 = '''
-Maximize: 15x1 + 10x2 = z
-Constraints:
-x1 <= 2
-x2 <= 3
-x1 + x2 <= 4
-x1, x2 >= 0
-'''
-
-problem3 = '''
-Maximize: 2x1 + 3x2 = z
-Constraints:
-2x1 + x2 <= 18
-6x1 + 5x2 <= 60
-2x1 + 5x2 <= 40
-x1, x2 >= 0
-'''
-
-problem4 = '''
-Maximize: x1 + x2 = z
-Constraints:
-x1 + x2 <= 8
-2x1 + x2 <= 10
-x1, x2 >= 0
-'''
-
-"""
 
 
 
@@ -714,7 +707,48 @@ Constraints:
 x1, x2 >= 0
 '''
     assert(getOptimizedValue(problem3) == 28)
+
+    # Additional Examples taken from
+    # https://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+    problem4 = '''
+Maximze: 4x1 + 6x2 = z
+Constraints:
+-x1 + x2 <= 11
+x1 + x2 <= 27
+2x1 + 5x2 <= 90
+x1, x2, >= 0
+'''
+    assert(getOptimizedValue(problem4) == 132)   
+    problem5 = '''
+Maximize: 2x1 - x2 + 2x3 = z
+Constraints:
+2x1 + x2 <= 10
+x1 + 2x2 - 2x3 <= 20
+x2 + 2x3 <= 5
+x1, x2, x3 >= 0
+'''
+    assert(getOptimizedValue(problem5) == 15)  
+    problem6 = '''
+Maximize: 3x1 + 2x2 + x3 = z
+Constraints:
+4x1 + x2 + x3 = 30
+2x1 + 3x2 + x3 <= 60
+x2 + 2x3 <= 40
+x1, x2, x3 >= 0
+'''
+    assert(getOptimizedValue(problem6) == 45)  
+    problem7 = '''
+Minimize: -2x1 + x2 = z
+Constraints:
+x1 + 2x2 <= 6
+3x1 + 2x2 <= 12
+x1, x2, >= 0
+'''
+    assert(getOptimizedValue(problem7) == -8)  
     print('Passed!')
+
+
+
 
 def testAll():
     testRemoveOperators()
