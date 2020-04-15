@@ -107,9 +107,11 @@ def flipOptimizationFunctionSigns(L):
                 L[i] = "-" + entry
     return L
 
-def checkEasyChangeMinToMax(initialConstraints):
+def checkEasyChangeMinToMax(problem):
     # Checks to ensure that the all the constraints have linear expressions
     # With the variables less than or equal to a constant
+    textList = problem.splitlines()
+    initialConstraints = textList[3:-1]
     modifiedConstraints = initialConstraints[:-1]
     for constraint in modifiedConstraints:
         if ("<=" not in constraint):
@@ -126,40 +128,27 @@ def easyChangeMinToMax(optimizationFunction):
     newOptimiztionFunction = " ".join(optimizationFunctionList)
     return newOptimiztionFunction
 
-
-
-problem8 = '''
-Minimize: 3x1 + 9x2 = z
-Constraints:
-2x1 + x2 >= 8
-x1 + 2x2 >= 8
-x1, x2 >= 0
-'''
-
-
-
-
-def getKeyInformation(problem):
-    # Given a text, the function returns the a 2d List of the key information
-    # Key information: constraint equations with slack variables and
-    # Optimization Function
-    outerList = []
+def getInitialInformation(problem):
+    # Given a problem, returns the initial constraints and the optimization function
     textList = problem.splitlines()
-    optimizationFunction = textList[1]
+    optimizationFunction = textList[1]  
 
     # The last line of every problem is the lower bound, which is always going to be zero
     # This bound is not used in the simplex tableau
     initialConstraints = textList[3:-1]
+    lowerBound = textList[-1]
 
+    return (optimizationFunction,initialConstraints,lowerBound)
 
-    # If I start out with a minimization function, I want to change it 
-    # To a maximization function
+def getKeyInformation(problem):
+    # Given a text, the function returns the a 2d List of the key information
+    # Key information: constraint equations with slack variables and optimization function
+    optimizationFunction, initialConstraints, lowerBound = getInitialInformation(problem) 
+
+    # If I start out with a minimization function, that is easily changable
+    # I simply switch it so that the optimization function is reversed
     if "Min" in optimizationFunction:
-        if checkEasyChangeMinToMax(initialConstraints):
-            optimizationFunction = easyChangeMinToMax(optimizationFunction)
-        else:
-            
-
+        optimizationFunction = easyChangeMinToMax(optimizationFunction)
 
     # I remove the extra words from the optimization line
     optimizationFunction = removeExtraWords(optimizationFunction.split(" "))
@@ -184,6 +173,29 @@ def getKeyInformation(problem):
     cleaned2dList = copy.deepcopy(cleanedConstraints)
     cleaned2dList.append(optimizationFunctionWithFlippedSigns)
     return cleaned2dList
+
+def getCoefficient(entry):
+    # Returns the numerical coefficients of algebraic values with the sign
+    # Only 'x' will have coefficients besides 1
+    if isinstance(entry,int):
+        # Accounts for all the zeros I inserted
+        return entry
+    elif entry.isdigit():
+        # Accounts for the non-zero integers
+        return int(entry)
+    else:
+        # Accounts for all the variables
+        if (entry[0].isalpha()):
+            return 1
+        else: 
+            if ("x" in entry) :
+                # Accounts for coefficients of -1 before the 'x'
+                if ("-x" in entry):
+                    return -1
+                else:
+                    replacement = entry.find('x')
+                    coefficient = int(entry[:replacement])
+                    return coefficient
 
 def removeCoefficientsFromX(L):
     # Takes in the 2d list and removes the coefficient for every 'x'
@@ -232,29 +244,6 @@ def addHeaderToMatrix(problem):
     variableList.append('num')
     L.insert(0,variableList)
     return L
-
-def getCoefficient(entry):
-    # Returns the numerical coefficients of algebraic values with the sign
-    # Only 'x' will have coefficients besides 1
-    if isinstance(entry,int):
-        # Accounts for all the zeros I inserted
-        return entry
-    elif entry.isdigit():
-        # Accounts for the non-zero integers
-        return int(entry)
-    else:
-        # Accounts for all the variables
-        if (entry[0].isalpha()):
-            return 1
-        else: 
-            if ("x" in entry) :
-                # Accounts for coefficients of -1 before the 'x'
-                if ("-x" in entry):
-                    return -1
-                else:
-                    replacement = entry.find('x')
-                    coefficient = int(entry[:replacement])
-                    return coefficient
 
 def createSimplexTalbeau(problem):
     # Creates the matrix with the coefficients of the constraints
@@ -382,6 +371,8 @@ def simplexAlgorithmWrapper(problem):
 
 def getOptimizedValue(problem):
     # Takes in an optimized matrix and returns the optimized value
+    if ("Min" in problem) and (not checkEasyChangeMinToMax(problem)):
+        problem = hardChangeMinToMax(problem)
     optimizedMatrix = simplexAlgorithmWrapper(problem)
     rows,cols = len(optimizedMatrix), len(optimizedMatrix[0])
     lastRow,lastCol = rows-1,cols-1
@@ -393,7 +384,107 @@ def getOptimizedValue(problem):
     return optimizedValue
 
 
+#########################################################
+# Changes Minimization Function to Maximization Function
+#########################################################
 
+def makeMinCoefficientMatrix(initialConstraints,optimizationFunction):
+    # Takes in a minimization function and turns the coefficents into a matrix 
+    # With all the coefficients
+    optimizationFunction = removeExtraWords(optimizationFunction.split(" "))
+    cleanedConstraints = cleanUpConstraints(initialConstraints)
+    matrix = cleanedConstraints
+    matrix.append(optimizationFunction)
+    for row in matrix:
+        removeOperators(row)
+    rows, cols = len(matrix), len(matrix[0])
+    for row in range(rows):
+        for col in range(cols):
+            entry = matrix[row][col]
+            matrix[row][col] = getCoefficient(entry)
+    return matrix
+
+def transposeMatrix(matrix):
+    # Tranposes a matrix
+    newMatrix = []
+    rows, cols = len(matrix), len(matrix[0])
+    for col in range(cols):
+        newRow = []
+        for row in range(rows):
+            newRow.append(matrix[row][col])
+        newMatrix.append(newRow)
+    return newMatrix
+
+def addInVariables(matrix):
+    rows, cols = len(matrix), len(matrix[0])
+    for row in range(rows):
+        for col in range(cols-1):
+            variable = 'x' + str(col+1)
+            entry = matrix[row][col]
+            if (entry != 1):
+                matrix[row][col] = str(entry) + variable
+            else:
+                matrix[row][col] = variable
+    # The last value of the equation is always 'z', the value I will optimize
+    matrix[rows-1][cols-1] = 'z'
+    return matrix
+
+def makeEquationList(equation):
+    # Takes in a list with the variables and outputs the equation as a list
+    newEquation = equation
+    newEquation[-1] = str(newEquation[-1])
+    for i in range(1,len(equation)-1):
+        entry = equation[i]
+        if entry[0] == "-":
+            newEquation.insert(i,"-")
+        else:
+            newEquation.insert(i,"+")
+    if 'z' in equation:
+        newEquation.insert(-1,'=')
+    else:
+        newEquation.insert(-1,'<=')
+    return newEquation
+
+def changeEquationIntoString(matrix,row):
+    equation = matrix[row]
+    newEquation = makeEquationList(equation)
+    newEquationString = " ".join(newEquation)
+    return newEquationString
+
+def addOperators(matrix,row,L):
+    # Takes in a row in the matrix and modifies L with that row
+    # Setting up the list so that it can be turned into a string 
+    newEquationString = changeEquationIntoString(matrix,row)
+    if ('z' in newEquationString):
+        L.insert(0,newEquationString)
+    else:
+        L.append(newEquationString)
+    return L
+
+def stringModifiers(maxProblemList,bound):
+    # Modifies the final part of the min problem to match the constraints in the
+    # Max problems 
+    maxProblemList.append(bound)
+    maxProblemList.insert(1, 'Constraints:')
+    maxProblemList[0] = "Maximize: " + maxProblemList[0]
+    maxProblem = "\n" + "\n".join(maxProblemList)
+    return maxProblem
+
+def hardChangeMinToMax(problem):
+    # Changes a minimization function into a maximization function 
+    # By rewriting the entire problem as a maximization function
+    optimizationFunction, initialConstraints, lowerBound = getInitialInformation(problem) 
+    matrix = makeMinCoefficientMatrix(initialConstraints,optimizationFunction)
+    transposedMatrix = transposeMatrix(matrix)
+    addInVariables(transposedMatrix)
+    rows, cols = len(transposedMatrix), len(transposedMatrix[0])
+    maxProblemList = []
+    for row in range(rows):
+        maxProblemList = addOperators(transposedMatrix,row, maxProblemList)
+    maxProblem = stringModifiers(maxProblemList,lowerBound)
+    return maxProblem
+
+#########################################################
 
 
 
@@ -745,10 +836,59 @@ x1 + 2x2 <= 6
 x1, x2, >= 0
 '''
     assert(getOptimizedValue(problem7) == -8)  
+    # Taken from https://www.youtube.com/watch?v=8_D3gkrgeK8
+    problem8 = '''
+Minimize: 3x1 + 9x2 = z
+Constraints:
+2x1 + x2 >= 8
+x1 + 2x2 >= 8
+x1, x2 >= 0
+'''
+    assert(getOptimizedValue(problem8) == 24)
+    # Taken from http://www.ms.uky.edu/~rwalker/Class%20Work%20Solutions/class%20work%208%20solutions
+    problem9 = '''
+Minimize: 2x1 + 5x2 = z
+Constraints:
+x1 + 2x2 >= 4
+3x1 + 2x2 >= 3
+x1, x2 >= 0
+'''
+    assert(getOptimizedValue(problem9) == 8)
     print('Passed!')
 
-
-
+def testHardChangeMinToMax(): 
+    print('Testing hardChangeMinToMax()...', end='')
+    problem8 = '''
+Minimize: 3x1 + 9x2 = z
+Constraints:
+2x1 + x2 >= 8
+x1 + 2x2 >= 8
+x1, x2 >= 0
+'''
+    maxProblem8 = '''
+Maximize: 8x1 + 8x2 = z
+Constraints:
+2x1 + x2 <= 3
+x1 + 2x2 <= 9
+x1, x2 >= 0'''
+    assert(hardChangeMinToMax(problem8) == maxProblem8)
+    assert(len(hardChangeMinToMax(problem8)) == len(maxProblem8))
+    problem9 = '''
+Minimize: 2x1 + 5x2 = z
+Constraints:
+x1 + 2x2 >= 4
+3x1 + 2x2 >= 3
+x1, x2 >= 0
+'''
+    maxProblem9 = '''
+Maximize: 4x1 + 3x2 = z
+Constraints:
+x1 + 3x2 <= 2
+2x1 + 2x2 <= 5
+x1, x2 >= 0'''
+    assert(hardChangeMinToMax(problem9) == maxProblem9)
+    assert(len(hardChangeMinToMax(problem9)) == len(maxProblem9))
+    print('Passed!')
 
 def testAll():
     testRemoveOperators()
@@ -759,5 +899,6 @@ def testAll():
     testGetCol()
     testGetColWithMostNegVal()
     testGetOptimizedValue()
+    testHardChangeMinToMax()
 
 testAll()
