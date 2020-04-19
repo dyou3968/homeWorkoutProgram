@@ -1,0 +1,63 @@
+
+Project Proposal:
+
+ProjectDescription:
+    Name: homeWorkoutProgramGenerator
+    Description: 
+    My goal for this project is to implement a program that gives the user a solid workout given the budget, time, and space constraints. 
+    Most of the workouts will simply require some space to do bodyweight exercises, as most of the users will be in that category.
+    My program will have different workouts for specific body parts, and it will create a two-week layout for exercises that users
+    will repeat for a certain duration of time (tbd). Ideally, the user would be able to run this program, and have a solid workout 
+    plan for the next two weeks.
+
+Competetive Analysis:
+        After taking a look at workout apps on the App Store, I realized that my project would have a lot of competition. There are many companies 
+    that have app or web-based products where users can not only get a great workout, but also meet with real trainers, get nutrition information,
+    and even buy apparel. One of the most popular apps is Aaptive, which has workouts and personal trainers on stand by. Another major company is Peloton, 
+    which has their machines and fully developed app as well. Given my experience thus far, my product will not be nearly as complete as theirs. Even just for 
+    the workout selection and implementation portions, I do not have to time nor photography skills to include physical images of each workout myself.
+    Furthermore, my app will not have personal trainers on demand that the users can call up if they want to change workouts. As of right now, there is also no 
+    audio portion of my project, which can be a major components to users who are better motivated when they hear a trainer. Some applications also have Apple Watch
+    implementation as well.
+        However, all of these applications require a subscription. My main competititve edge is that my product is free, which is a great incentive for people to try
+    out, since there is no monetary cost to them. Furthermore, my goal is to make the workouts more customizable, so that the user can add in their own workouts as well.
+    Given the current situation with the pandemic, many people do not have access to gym equipment that would be necessary to maintain muscle mass or weight loss. My
+    goal for this app is to have users be creative and come up with ways to do exercises that use other items to substitute the standard equipment. 
+
+Structural Plan:
+        The main components of the project will be organized into three main areas: the user interface, the exercise dictionary, and the workout generator itself. I 
+    have all my files organized in one folder thus far, and I will add more as I continue to add complexity to my code, implement a user interface, and create
+    the workout generator. The back-end workout exercises will have the word 'exercise' in the name of the program to indicate its main function. Similarly, the 
+    webscrapping functions will be labeled with 'scrape' and the website name. Any major algorithmically complex parts will be labeled with 'program'. Finally, any
+    component related to user interface will include 'UI' in the file name. 
+
+Algorithmic Plan:
+        The main source of my algorithmic complexity at this point will be my implementation of the recursive simplex algorithm. This algorithm takes in linear constraints, and
+    finds the maximum or minimum of a function with those linear constraints. I give the algorithm a problem as a string and it first parses through the string to get the most useful 
+    information. Then, it adds in slack variables, finds the coefficient of each variable, and creates a matrix with the information. Once the matrix with only numbers is created, I
+    run the simplex algorithm on it, which first finds the column with the most negative value in the optimization function row, finds the pivot with the most stringent constraints, and
+    change every other row so that there are zeros in that column. The problem keeps running until all the numbers in the optimization function row are greater than or equal to zero.
+        My other algorithmic complexity will come from my exerciseGenerator, which will take different attributes about a person, and return a workout for them. I will be using classes 
+    for this implementation, and I plan on applying the constraints to the simplex algorithm. In order to do this, I will first change all the attributes into one unit, which will be 
+    calories per hour. Then I will apply the simplex algorithm so that the program maximizes the number of calories the user will burn with those constraints. 
+
+Timeline Plan:
+    Deadline: April 29, 2020
+    Today: April 15, 2020
+    Tasks Completed:
+        Webscraping workouts 
+        Simplex Algorithm
+    Tasks to Complete:
+        Main Exercise Generator (complete by April 18, 2020)
+        User Data Management and Login Feature (complete by April 19)
+        Basic UI (complete by April 22, 2020)
+
+Version Control Plan:
+    All of my code is stored here: https://github.com/dyou3968/homeWorkoutProgram
+    I upload my work as I finish one program at a time, so I make sure nothing is lost.
+
+Module List:
+    Beautiful Soup
+    Requests
+    Tkinter
+
