@@ -1,17 +1,5 @@
 
 
-
-# class Intensity(object):
-#     def __init__(self, intensity):
-#         self.intensity = intensity
-
-    #def intensityCalculator(self):
-
-"""
-Intensity should be a number from 1 to 5,
-with 1 being the most intense
-"""
-
 class WorkoutGenerator(object):
     def __init__(self, name, weight, gender, age, activity, bodyPart, intensity):
         self.name = name

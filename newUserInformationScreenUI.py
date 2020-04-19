@@ -1,5 +1,4 @@
 from cmu_112_graphics import *
-from newLoginScreenUI import *
 from helperFunctionsUI import *
 
 class NewUserInformationScreen(Mode):
@@ -13,7 +12,12 @@ class NewUserInformationScreen(Mode):
         self.gender = "Click here"
         self.weight = "Click here"
         self.age = "Click here"
-        self.activityLevel = "click here"
+        self.activityLevel = "Click here"
+
+    def getUserInformation(self):
+        self.userInfo = [self.username,self.password,self.gender,
+                    self.weight,self.age,self.activityLevel]
+        return self.userInfo
 
 #########################################################
 # From https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
@@ -42,12 +46,13 @@ class NewUserInformationScreen(Mode):
         elif self.selection == (5,1):
              self.getActivityLevel(event)
 
+
         (backX1,backX2,backY1,backY2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         (nextX1,nextX2,nextY1,nextY2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         if checkClickInBox.checkInBox(event.x, event.y,backX1,backX2,backY1,backY2):
             self.app.setActiveMode(self.app.NewLoginScreen)
-        # if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
-        #     self.app.setActiveMode(self.app.ReturnLoginScreen)
+        if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
+            self.app.setActiveMode(self.app.MainScreen)
 
     def getUsername(self, event):
         username = self.getUserInput('Enter your username')
@@ -165,3 +170,11 @@ class NewUserInformationScreen(Mode):
         self.createTextBoxes(canvas)
         self.createNextBox(canvas)
         self.createBackBox(canvas)
+
+
+class MyApp(ModalApp):
+    def appStarted(self):
+        self.NewUserInformationScreen = NewUserInformationScreen()
+        self.setActiveMode(self.NewUserInformationScreen)
+
+app = MyApp(width=1000, height=800)
