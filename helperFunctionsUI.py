@@ -65,3 +65,7 @@ class generixBoxDimensions(object):
         y1 = (18/20)*self.height
         y2 = (19/20)*self.height
         return (x1,x2,y1,y2)
+
+class getFontSize(object):
+    def fontSize(size):
+        return f'Times_New_Roman {size} bold'
