@@ -1,3 +1,10 @@
+#############################################################################
+"""
+This is the new user login screen that the user sees before they place
+their information into the database.
+"""
+#############################################################################
+
 from cmu_112_graphics import *
 from helperFunctionsUI import *
 

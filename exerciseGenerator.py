@@ -1,5 +1,7 @@
 
 
+["David You","1234","male",160,190,2]
+
 class WorkoutGenerator(object):
     def __init__(self, name, weight, gender, age, activity, bodyPart, intensity):
         self.name = name

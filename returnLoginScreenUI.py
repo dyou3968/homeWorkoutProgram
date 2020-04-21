@@ -1,3 +1,12 @@
+#############################################################################
+"""
+This is the new returning information screen where the user inputs their username
+and password. the program checks to see if the username and password are contained
+in the txt file, and if so takes that person's "profile". The new user login
+screen also maps to this page for the user to login.
+"""
+#############################################################################
+
 from cmu_112_graphics import *
 from helperFunctionsUI import *
 
@@ -33,8 +42,16 @@ class ReturnLoginScreen(Mode):
         (nextX1,nextX2,nextY1,nextY2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         if checkClickInBox.checkInBox(event.x, event.y,backX1,backX2,backY1,backY2):
             self.app.setActiveMode(self.app.StartScreen)
-        # if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
-        #     self.app.setActiveMode(self.app.ReturnLoginScreen)
+        if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
+            userData = self.getUserData("userProfile.txt") #2d List of the all the user data
+            print(userData)
+            print(self.username,self.password)
+            #self.app.setActiveMode(self.app.MainScreen)
+
+
+#############################################################################
+# Get User Inputs
+#############################################################################
 
     def getUsername(self, event):
         username = self.getUserInput('Enter your username')
@@ -49,6 +66,49 @@ class ReturnLoginScreen(Mode):
             self.password = "Must enter password to login"
         else:
             self.password = password
+
+
+#############################################################################
+
+
+#############################################################################
+# Retrieves the user information from the txt file
+# First, it checks to see if the username is in the file
+# Then, it checks if the password matches the password on file
+
+# Inspiration from: 
+# https://github.com/dyou3968/o-nlogn-/blob/master/SpeechRecog/todoListFunction.py
+# https://www.cs.cmu.edu/~112/notes/notes-strings.html#basicFileIO
+#############################################################################
+
+    def getUserList(self,path):
+        with open(path,'rt') as f:
+            return f.read()
+
+    def getUserData(self,path):
+        userProfiles = self.getUserList(path)
+        userList = []
+        for user in userProfiles.splitlines():
+            modifiedUser = self.cleanUpUserData(user)
+            userList.append(modifiedUser)
+        return userList
+
+    def cleanUpUserData(self,user):
+        # Takes in the unmodified string from the txt file and returns a list
+        # This list will be added to the userList, so it will create a 2d list
+        user = user[1:-1]
+        userInfo = user.split(",")
+        modifiedUserInfoList = []
+        for entry in userInfo:
+            entry = entry.strip()
+            entry = entry[1:-1]
+            modifiedUserInfoList.append(entry)
+        return modifiedUserInfoList
+
+
+#############################################################################
+# View Portion
+#############################################################################
 
     def drawInputBoxes(self,text,font,x1,x2,y1,y2,canvas):
         canvas.create_text((x1+x2)/2,(y1+y2)/2,text = text, font = font)
@@ -86,3 +146,12 @@ class ReturnLoginScreen(Mode):
         self.createTextBoxes(canvas)
         self.createNextBox(canvas)
         self.createBackBox(canvas)
+
+
+class MyApp(ModalApp):
+    def appStarted(self):
+        self.ReturnLoginScreen = ReturnLoginScreen()
+        #self.MainScreen = MainScreen()
+        self.setActiveMode(self.ReturnLoginScreen)
+
+app = MyApp(width=1000, height=800)

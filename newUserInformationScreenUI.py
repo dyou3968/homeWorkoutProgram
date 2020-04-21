@@ -1,3 +1,11 @@
+#############################################################################
+"""
+This is the new user information screen where the user inputs their information.
+The information is then stored into a txt file, which will be used by the other 
+files.
+"""
+#############################################################################
+
 from cmu_112_graphics import *
 from helperFunctionsUI import *
 
@@ -14,14 +22,16 @@ class NewUserInformationScreen(Mode):
         self.age = "Click here"
         self.activityLevel = "Click here"
 
-    def getUserInformation(self):
-        self.userInfo = [self.username,self.password,self.gender,
-                    self.weight,self.age,self.activityLevel]
-        return self.userInfo
+        self.someEntriesEmpty = False
 
-#########################################################
+#############################################################################
+# Control Portion
+#############################################################################
+
+
+############################################################
 # From https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
-#########################################################
+############################################################
 
     def mousePressed(self, event):
         (row, col) = viewToModel.getCell(self,event.x, event.y)
@@ -31,7 +41,7 @@ class NewUserInformationScreen(Mode):
         else:
             self.selection = (row, col)
 
-#########################################################
+############################################################
 
         if self.selection == (0,1) :
             self.getUsername(event)
@@ -45,14 +55,59 @@ class NewUserInformationScreen(Mode):
              self.getAge(event)
         elif self.selection == (5,1):
              self.getActivityLevel(event)
-
-
         (backX1,backX2,backY1,backY2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         (nextX1,nextX2,nextY1,nextY2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         if checkClickInBox.checkInBox(event.x, event.y,backX1,backX2,backY1,backY2):
             self.app.setActiveMode(self.app.NewLoginScreen)
         if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
-            self.app.setActiveMode(self.app.MainScreen)
+            if "Click here" not in self.getUserInformation():
+                self.someEntriesEmpty = False
+                self.addUserInformation()
+                print("User added to database")
+                self.app.setActiveMode(self.app.ReturnLoginScreen)
+            else:
+                self.someEntriesEmpty = True
+
+#############################################################################
+
+
+#############################################################################
+# Add User Information to Text File
+
+# Inspiration from: 
+# https://github.com/dyou3968/o-nlogn-/blob/master/SpeechRecog/todoListFunction.py
+# https://www.cs.cmu.edu/~112/notes/notes-strings.html#basicFileIO
+#############################################################################
+
+    def textToFile(self,path,text):
+        file = open(r"userProfile.txt","w+")
+        file.write(text)
+        file.close()
+
+    def addUser(self,path,user):
+        users = self.getUserList(path)
+        users += user + "\n"
+        self.textToFile(path,users)
+        return None
+
+    def getUserInformation(self):
+        self.userInfo = [self.username,self.password,self.gender,
+                        self.weight,self.age,self.activityLevel]
+        return self.userInfo
+
+    def addUserInformation(self):
+        path = "userProfile.txt"
+        return self.addUser(path,str(self.userInfo))
+
+
+#############################################################################
+
+
+#############################################################################
+# Get User Inputs
+#############################################################################
+
+
 
     def getUsername(self, event):
         username = self.getUserInput('Enter your username')
@@ -118,6 +173,13 @@ class NewUserInformationScreen(Mode):
         except:
             self.activityLevel = "Activity level must be \n a whole number"
 
+#############################################################################
+
+
+#############################################################################
+# View Portion
+#############################################################################
+
     def drawInputBoxes(self,text,font,x1,x2,y1,y2,canvas):
         canvas.create_text((x1+x2)/2,(y1+y2)/2,text = text, font = font)
 
@@ -170,11 +232,6 @@ class NewUserInformationScreen(Mode):
         self.createTextBoxes(canvas)
         self.createNextBox(canvas)
         self.createBackBox(canvas)
-
-
-class MyApp(ModalApp):
-    def appStarted(self):
-        self.NewUserInformationScreen = NewUserInformationScreen()
-        self.setActiveMode(self.NewUserInformationScreen)
-
-app = MyApp(width=1000, height=800)
+        if (self.someEntriesEmpty):
+            canvas.create_text(self.width/2,(9/10)*self.height, text = "Must enter all entries to continue",
+                                fill = "red", font = getFontSize.fontSize(30))

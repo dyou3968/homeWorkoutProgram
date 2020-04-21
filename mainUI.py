@@ -1,10 +1,16 @@
+#############################################################################
+"""
+This is the main file that will run the entire program. I will import
+all the different files into this file.
+"""
+#############################################################################
+
 from cmu_112_graphics import *
 from helperFunctionsUI import *
 from startScreenUI import *
 from newLoginScreenUI import *
 from returnLoginScreenUI import *
 from newUserInformationScreenUI import *
-
 
 class MyApp(ModalApp):
     def appStarted(self):

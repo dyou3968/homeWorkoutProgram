@@ -1,3 +1,11 @@
+#############################################################################
+"""
+These are the universal helper functions that are useful for every single file.
+"""
+#############################################################################
+
+
+
 # cmu_112_graphics notes and documentation taken from 
 # https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
 # https://www.cs.cmu.edu/~112/notes/notes-animations-part2.html
@@ -69,3 +77,5 @@ class generixBoxDimensions(object):
 class getFontSize(object):
     def fontSize(size):
         return f'Times_New_Roman {size} bold'
+
+
