@@ -19,6 +19,9 @@ class ReturnLoginScreen(Mode):
         self.username = "Click here"
         self.password = "Click here"
 
+        self.someEntriesEmpty = False
+        self.userInData = True
+        self.correctPassword = True
 #########################################################
 # From https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
 #########################################################
@@ -43,11 +46,25 @@ class ReturnLoginScreen(Mode):
         if checkClickInBox.checkInBox(event.x, event.y,backX1,backX2,backY1,backY2):
             self.app.setActiveMode(self.app.StartScreen)
         if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
-            userData = self.getUserData("userProfile.txt") #2d List of the all the user data
-            print(userData)
-            print(self.username,self.password)
-            #self.app.setActiveMode(self.app.MainScreen)
+            self.potentialOutcomesOfLogin()
 
+    def potentialOutcomesOfLogin(self):
+        if "Click here" not in self.getUsernameAndPassword():
+            userData = self.getUserData("userProfile.txt") #2d List of the all the user data
+            self.someEntriesEmpty = False
+            if (not self.checkIfUserInData(userData, self.username)):
+                self.correctPassword = True
+                self.userInData = False
+            elif (not self.checkPasswordMatch(userData,self.password)):
+                self.userInData = True
+                self.correctPassword = False
+            else:
+                self.removeOtherUsers("currentUser.txt")
+                self.addUserInformation("currentUser.txt", self.UserProfile(userData,self.username))            
+                self.app.setActiveMode(self.app.MainScreen)
+                
+        else:
+            self.someEntriesEmpty = True
 
 #############################################################################
 # Get User Inputs
@@ -76,7 +93,7 @@ class ReturnLoginScreen(Mode):
 # First, it checks to see if the username is in the file
 # Then, it checks if the password matches the password on file
 
-# Inspiration from: 
+# Inspiration from:
 # https://github.com/dyou3968/o-nlogn-/blob/master/SpeechRecog/todoListFunction.py
 # https://www.cs.cmu.edu/~112/notes/notes-strings.html#basicFileIO
 #############################################################################
@@ -105,6 +122,50 @@ class ReturnLoginScreen(Mode):
             modifiedUserInfoList.append(entry)
         return modifiedUserInfoList
 
+    def getUsernameAndPassword(self):
+        self.userInfo = [self.username,self.password]
+        return self.userInfo
+
+    def checkIfUserInData(self,userData, username):
+        rows = len(userData)
+        for row in range(rows):
+            dataUsername = userData[row][0]
+            if dataUsername == username:
+                return True
+        return False
+
+    def checkPasswordMatch(self, userData, password):
+        rows = len(userData)
+        for row in range(rows):
+            dataPassword = userData[row][1]
+            if dataPassword == password:
+                return True
+        return False
+
+    def UserProfile(self,userData,username):
+        rows = len(userData)
+        for row in range(rows):
+            dataUsername = userData[row][0]
+            if dataUsername == username:
+                return userData[row]
+        return None
+
+    def addUser(self,path,user):
+        users = self.getUserList(path)
+        users += user + "\n"
+        self.textToFile(path,users)
+        return None
+
+    def textToFile(self,path,text):
+        file = open(r"currentUser.txt","w+")
+        file.write(text)
+        file.close()
+
+    def addUserInformation(self,path,currentUser):
+        return self.addUser(path,str(currentUser))
+
+    def removeOtherUsers(self,path):
+        self.textToFile(path,"")
 
 #############################################################################
 # View Portion
@@ -146,12 +207,12 @@ class ReturnLoginScreen(Mode):
         self.createTextBoxes(canvas)
         self.createNextBox(canvas)
         self.createBackBox(canvas)
-
-
-class MyApp(ModalApp):
-    def appStarted(self):
-        self.ReturnLoginScreen = ReturnLoginScreen()
-        #self.MainScreen = MainScreen()
-        self.setActiveMode(self.ReturnLoginScreen)
-
-app = MyApp(width=1000, height=800)
+        if (self.someEntriesEmpty):
+            canvas.create_text(self.width/2,(9/10)*self.height, fill = "red",
+                            text = "Must enter all entries to continue", font = getFontSize.fontSize(30))
+        if (not self.userInData):
+            canvas.create_text(self.width/2,(9/10)*self.height, fill = "red",
+                            text = "User not in data", font = getFontSize.fontSize(30))
+        if (not self.correctPassword):
+            canvas.create_text(self.width/2,(9/10)*self.height, fill = "red",
+                            text = "Incorrect Password", font = getFontSize.fontSize(30))

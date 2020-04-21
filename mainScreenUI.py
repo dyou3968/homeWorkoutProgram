@@ -1,15 +1,21 @@
 from cmu_112_graphics import *
 from helperFunctionsUI import *
-from newUserInformationScreenUI import *
+from returnLoginScreenUI import *
 
 class MainScreen(Mode):
-    def appStarted(self):
-        stats = NewUserInformationScreen.appStarted(self)
+
+    
 
 
-class MyApp(ModalApp):
-    def appStarted(self):
-        self.MainScreen = MainScreen()
-        self.setActiveMode(self.MainScreen)
+    def redrawAll(self,canvas):
+        canvas.create_rectangle(100,100,300,300, outline = "black")
 
-app = MyApp(width=1000, height=800)
+
+
+
+# class MyApp(ModalApp):
+#     def appStarted(self):
+#         self.MainScreen = MainScreen()
+#         self.setActiveMode(self.MainScreen)
+
+# app = MyApp(width=1000, height=800)

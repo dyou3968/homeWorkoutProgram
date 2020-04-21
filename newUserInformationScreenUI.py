@@ -60,13 +60,16 @@ class NewUserInformationScreen(Mode):
         if checkClickInBox.checkInBox(event.x, event.y,backX1,backX2,backY1,backY2):
             self.app.setActiveMode(self.app.NewLoginScreen)
         if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
-            if "Click here" not in self.getUserInformation():
-                self.someEntriesEmpty = False
-                self.addUserInformation()
-                print("User added to database")
-                self.app.setActiveMode(self.app.ReturnLoginScreen)
-            else:
-                self.someEntriesEmpty = True
+            self.potentialOutcomesOfLogin()
+
+    def potentialOutcomesOfLogin(self):
+        if "Click here" not in self.getUserInformation():
+            self.someEntriesEmpty = False
+            self.addUserInformation("userProfile.txt")
+            print("User added to database")
+            self.app.setActiveMode(self.app.ReturnLoginScreen)
+        else:
+            self.someEntriesEmpty = True
 
 #############################################################################
 
@@ -84,20 +87,23 @@ class NewUserInformationScreen(Mode):
         file.write(text)
         file.close()
 
+    def getUserList(self,path):
+        with open(path, "rt") as f:
+            return f.read()
+
     def addUser(self,path,user):
-        users = self.getUserList(path)
+        users = self.getUserList("userProfile.txt")
         users += user + "\n"
         self.textToFile(path,users)
         return None
+
+    def addUserInformation(self,path):
+        return self.addUser(path,str(self.userInfo))
 
     def getUserInformation(self):
         self.userInfo = [self.username,self.password,self.gender,
                         self.weight,self.age,self.activityLevel]
         return self.userInfo
-
-    def addUserInformation(self):
-        path = "userProfile.txt"
-        return self.addUser(path,str(self.userInfo))
 
 
 #############################################################################
@@ -233,5 +239,5 @@ class NewUserInformationScreen(Mode):
         self.createNextBox(canvas)
         self.createBackBox(canvas)
         if (self.someEntriesEmpty):
-            canvas.create_text(self.width/2,(9/10)*self.height, text = "Must enter all entries to continue",
-                                fill = "red", font = getFontSize.fontSize(30))
+            canvas.create_text(self.width/2,(9/10)*self.height, fill = "red", 
+                            text = "Must enter all entries to continue", font = getFontSize.fontSize(30))
