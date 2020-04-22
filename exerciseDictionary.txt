@@ -22,5 +22,6 @@
 'full': ['Crab Walk', 'Inchworm', 'Bear Crawl', 'Crocodile Crawl', 'Mountain Climber', 'Frog Stand', 'Planche', 'Back Lever', 
 'Front Lever', 'Muscle-Up', 'Human Flag'], 
 
+
 'plyos': ['Jumping Jack', 'Jumping Rope', 'Jump Squat', 'Lateral Jump', 'Tuck Jump', 'Jumping Lunge', 'Burpee', 
 'Clapping Push-Up', 'Knee-Slap Push-Up', 'Jumping Skater Squat', 'Single-Leg Jump Squat', 'Flying Superman Push-Up', 'Aztec Push-Up']}

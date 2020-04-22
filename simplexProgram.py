@@ -370,18 +370,21 @@ def simplexAlgorithmWrapper(problem):
     return optimizedMatrix
 
 def getOptimizedValue(problem):
-    # Takes in an optimized matrix and returns the optimized value
-    if ("Min" in problem) and (not checkEasyChangeMinToMax(problem)):
-        problem = hardChangeMinToMax(problem)
-    optimizedMatrix = simplexAlgorithmWrapper(problem)
-    rows,cols = len(optimizedMatrix), len(optimizedMatrix[0])
-    lastRow,lastCol = rows-1,cols-1
-    optimizedValue = round(optimizedMatrix[lastRow][lastCol])
-    # If you want to see the 2d matrix, uncomment the next line
-    #print(print2dList(optimizedMatrix))
-    if "Min" in problem:
-        return -1*optimizedValue
-    return optimizedValue
+    try:
+        # Takes in an optimized matrix and returns the optimized value
+        if ("Min" in problem) and (not checkEasyChangeMinToMax(problem)):
+            problem = hardChangeMinToMax(problem)
+        optimizedMatrix = simplexAlgorithmWrapper(problem)
+        rows,cols = len(optimizedMatrix), len(optimizedMatrix[0])
+        lastRow,lastCol = rows-1,cols-1
+        optimizedValue = round(optimizedMatrix[lastRow][lastCol])
+        # If you want to see the 2d matrix, uncomment the next line
+        #print(print2dList(optimizedMatrix))
+        if "Min" in problem:
+            return -1*optimizedValue
+        return optimizedValue
+    except:
+        return "Solution not possible"
 
 
 #########################################################
@@ -903,4 +906,4 @@ def testAll():
     testGetOptimizedValue()
     testHardChangeMinToMax()
 
-testAll()
+#testAll()

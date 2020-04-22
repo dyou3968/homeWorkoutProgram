@@ -34,7 +34,7 @@ def getOnlyLegExercises(d):
     return legWorkoutDict
 
 def getOnlyExercises(d,bodypart):
-    # Works for core, back, chest, fullBody, and pylo
+    # Works for core, back, chest, full, and plyos
     individualExerciseDict = dict()
     for key in d:
         if key == bodypart:
