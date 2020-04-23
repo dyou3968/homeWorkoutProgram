@@ -18,18 +18,15 @@ class NewLoginScreen(Mode):
         if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
             self.app.setActiveMode(self.app.NewUserInformationScreen)
 
-    def drawInputBoxes(self,text,font,x1,x2,y1,y2,canvas):
-            canvas.create_text((x1+x2)/2,(y1+y2)/2,text = text, font = font)
-
     def createNextBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        self.drawInputBoxes("Next","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
+        inputBoxes.drawInputBoxes(self,"Next","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
 
     def createBackBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        self.drawInputBoxes("Back","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
+        inputBoxes.drawInputBoxes(self,"Back","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
 
     def drawText(self,canvas):
         font = getFontSize.fontSize(42)

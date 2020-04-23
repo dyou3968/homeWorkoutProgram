@@ -171,19 +171,16 @@ class ReturnLoginScreen(Mode):
 # View Portion
 #############################################################################
 
-    def drawInputBoxes(self,text,font,x1,x2,y1,y2,canvas):
-        canvas.create_text((x1+x2)/2,(y1+y2)/2,text = text, font = font)
-
     def createTextInBoxes(self,row,col,font,x1,x2,y1,y2,canvas):
             if (row == 0) and (col == 0):
-                self.drawInputBoxes("Username",font,x1,x2,y1,y2,canvas)
+                inputBoxes.drawInputBoxes(self,"Username",font,x1,x2,y1,y2,canvas)
             if (row == 1) and (col == 0):
-                self.drawInputBoxes("Password",font,x1,x2,y1,y2,canvas)
+                inputBoxes.drawInputBoxes(self,"Password",font,x1,x2,y1,y2,canvas)
             # User Input column
             if (row == 0) and (col == 1):
-                self.drawInputBoxes(self.username,font,x1,x2,y1,y2,canvas)
+                inputBoxes.drawInputBoxes(self,self.username,font,x1,x2,y1,y2,canvas)
             if (row == 1) and (col == 1):
-                self.drawInputBoxes(self.password,font,x1,x2,y1,y2,canvas)
+                inputBoxes.drawInputBoxes(self,self.password,font,x1,x2,y1,y2,canvas)
 
     def createTextBoxes(self,canvas):
         for row in range(self.rows):
@@ -196,12 +193,12 @@ class ReturnLoginScreen(Mode):
     def createNextBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        self.drawInputBoxes("Next","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
+        inputBoxes.drawInputBoxes(self,"Next","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
 
     def createBackBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        self.drawInputBoxes("Back","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
+        inputBoxes.drawInputBoxes(self,"Back","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
 
     def redrawAll(self,canvas):
         self.createTextBoxes(canvas)

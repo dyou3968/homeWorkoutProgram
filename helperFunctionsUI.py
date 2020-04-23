@@ -59,6 +59,10 @@ class checkClickInBox(object):
     def checkInBox(x,y,x1,x2,y1,y2):
         return ((x1 <= x <= x2) and (y1 <= y <= y2))
 
+class inputBoxes(object):
+    def drawInputBoxes(self,text,font,x1,x2,y1,y2,canvas):
+            canvas.create_text((x1+x2)/2,(y1+y2)/2,text = text, font = font)
+
 class generixBoxDimensions(object):
     def lowerRightBoxDimensions(self):
         x1 = (15/20)*self.width
@@ -72,6 +76,13 @@ class generixBoxDimensions(object):
         x2 = (5/20)*self.width
         y1 = (18/20)*self.height
         y2 = (19/20)*self.height
+        return (x1,x2,y1,y2)
+
+    def lowerBoxDimensions(self):
+        x1 = (0/5)*self.width
+        x2 = (5/5)*self.width
+        y1 = (7/8)*self.height
+        y2 = self.height
         return (x1,x2,y1,y2)
 
 class getFontSize(object):

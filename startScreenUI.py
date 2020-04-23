@@ -16,18 +16,15 @@ class StartScreen(Mode):
         if checkClickInBox.checkInBox(event.x, event.y,returnUserx1,returnUserx2,returnUsery1,returnUsery2):
             self.app.setActiveMode(self.app.ReturnLoginScreen)
 
-    def drawInputBoxes(self,text,font,x1,x2,y1,y2,canvas):
-        canvas.create_text((x1+x2)/2,(y1+y2)/2,text = text, font = font)
-
     def createNewUserBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        self.drawInputBoxes("New User","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
+        inputBoxes.drawInputBoxes(self,"New User","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
 
     def createReturningUserBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        self.drawInputBoxes("Returning User","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
+        inputBoxes.drawInputBoxes(self,"Returning User","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
 
     def createUserBoxes(self,canvas):
         self.createNewUserBox(canvas)

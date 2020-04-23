@@ -33,8 +33,17 @@ def getOnlyLegExercises(d):
                 legWorkoutDict[key] = d[key]
     return legWorkoutDict
 
+def cleanUpLegDict(d):
+    legWorkoutDict = getOnlyLegExercises(d)
+    exercises = legWorkoutDict["glutes"]
+    messedUpKey = "27. Single-Leg Shoulders-and-Feet-Elevated Hip Raise"
+    del exercises[messedUpKey]
+    return legWorkoutDict
+
 def getOnlyExercises(d,bodypart):
     # Works for core, back, chest, full, and plyos
+    if bodypart == "legs":
+        return cleanUpLegDict(d)
     individualExerciseDict = dict()
     for key in d:
         if key == bodypart:

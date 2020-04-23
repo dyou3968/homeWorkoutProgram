@@ -113,8 +113,6 @@ class NewUserInformationScreen(Mode):
 # Get User Inputs
 #############################################################################
 
-
-
     def getUsername(self, event):
         username = self.getUserInput('Enter your username')
         if (username == None):
