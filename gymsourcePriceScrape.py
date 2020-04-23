@@ -1,3 +1,10 @@
+#############################################################################
+"""
+This program scrapes the Gym Source price page for the name and price 
+of each item.
+"""
+#############################################################################
+
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 

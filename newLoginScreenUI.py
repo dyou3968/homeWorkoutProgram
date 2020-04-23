@@ -18,6 +18,11 @@ class NewLoginScreen(Mode):
         if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
             self.app.setActiveMode(self.app.NewUserInformationScreen)
 
+
+#############################################################################
+# View Portion
+#############################################################################
+
     def createNextBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = "black")

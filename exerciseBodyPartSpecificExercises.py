@@ -1,3 +1,12 @@
+#############################################################################
+"""
+This program takes the exercise dictionary from exerciseDict.py and cleans up
+all the data in a way that it can be easier read by Python and me. It returns 
+a cleaned up version of the dictionary of exercises, and combines the 
+calves, thighs, and glutes portion of the exercises into one "legs" dictionary.
+"""
+#############################################################################
+
 from exercisesDict import *
 
 exerciseCategoryDict = convertHTMLToDictionary(key = None)

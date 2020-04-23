@@ -6,7 +6,6 @@ all the different files into this file.
 #############################################################################
 
 from cmu_112_graphics import *
-from helperFunctionsUI import *
 from startScreenUI import *
 from newLoginScreenUI import *
 from returnLoginScreenUI import *

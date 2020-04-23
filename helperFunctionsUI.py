@@ -4,8 +4,6 @@ These are the universal helper functions that are useful for every single file.
 """
 #############################################################################
 
-
-
 # cmu_112_graphics notes and documentation taken from 
 # https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
 # https://www.cs.cmu.edu/~112/notes/notes-animations-part2.html
@@ -53,6 +51,10 @@ class modelToView(object):
         return (x1, y1, x2, y2)
 
 #########################################################
+
+
+#########################################################
+# Other Helper Functions
 #########################################################
 
 class checkClickInBox(object):

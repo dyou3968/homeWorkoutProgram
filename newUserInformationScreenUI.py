@@ -110,7 +110,7 @@ class NewUserInformationScreen(Mode):
 
 
 #############################################################################
-# Get User Inputs
+# User Inputs
 #############################################################################
 
     def getUsername(self, event):
@@ -188,31 +188,32 @@ class NewUserInformationScreen(Mode):
         canvas.create_text((x1+x2)/2,(y1+y2)/2,text = text, font = font)
 
     def createTextInBoxes(self,row,col,font,x1,x2,y1,y2,canvas):
-            if (row == 0) and (col == 0):
-                self.drawInputBoxes("Username",font,x1,x2,y1,y2,canvas)
-            if (row == 1) and (col == 0):
-                self.drawInputBoxes("Password",font,x1,x2,y1,y2,canvas)
-            if (row == 2) and (col == 0):
-                self.drawInputBoxes("Gender",font,x1,x2,y1,y2,canvas)
-            if (row == 3) and (col == 0):
-                self.drawInputBoxes("Weight",font,x1,x2,y1,y2,canvas)
-            if (row == 4) and (col == 0):
-                self.drawInputBoxes("Age",font,x1,x2,y1,y2,canvas)
-            if (row == 5) and (col == 0):
-                self.drawInputBoxes("Activity Level",font,x1,x2,y1,y2,canvas)
-            # User Input column
-            if (row == 0) and (col == 1):
-                self.drawInputBoxes(self.username,font,x1,x2,y1,y2,canvas)
-            if (row == 1) and (col == 1):
-                self.drawInputBoxes(self.password,font,x1,x2,y1,y2,canvas)
-            if (row == 2) and (col == 1):
-                self.drawInputBoxes(self.gender,font,x1,x2,y1,y2,canvas)
-            if (row == 3) and (col == 1):
-                self.drawInputBoxes(self.weight,font,x1,x2,y1,y2,canvas)
-            if (row == 4) and (col == 1):
-                self.drawInputBoxes(self.age,font,x1,x2,y1,y2,canvas)
-            if (row == 5) and (col == 1):
-                self.drawInputBoxes(self.activityLevel,font,x1,x2,y1,y2,canvas)
+        # Default Column
+        if (row == 0) and (col == 0):
+            self.drawInputBoxes("Username",font,x1,x2,y1,y2,canvas)
+        if (row == 1) and (col == 0):
+            self.drawInputBoxes("Password",font,x1,x2,y1,y2,canvas)
+        if (row == 2) and (col == 0):
+            self.drawInputBoxes("Gender",font,x1,x2,y1,y2,canvas)
+        if (row == 3) and (col == 0):
+            self.drawInputBoxes("Weight",font,x1,x2,y1,y2,canvas)
+        if (row == 4) and (col == 0):
+            self.drawInputBoxes("Age",font,x1,x2,y1,y2,canvas)
+        if (row == 5) and (col == 0):
+            self.drawInputBoxes("Activity Level",font,x1,x2,y1,y2,canvas)
+        # User Input column
+        if (row == 0) and (col == 1):
+            self.drawInputBoxes(self.username,font,x1,x2,y1,y2,canvas)
+        if (row == 1) and (col == 1):
+            self.drawInputBoxes(self.password,font,x1,x2,y1,y2,canvas)
+        if (row == 2) and (col == 1):
+            self.drawInputBoxes(self.gender,font,x1,x2,y1,y2,canvas)
+        if (row == 3) and (col == 1):
+            self.drawInputBoxes(self.weight,font,x1,x2,y1,y2,canvas)
+        if (row == 4) and (col == 1):
+            self.drawInputBoxes(self.age,font,x1,x2,y1,y2,canvas)
+        if (row == 5) and (col == 1):
+            self.drawInputBoxes(self.activityLevel,font,x1,x2,y1,y2,canvas)
 
     def createTextBoxes(self,canvas):
         for row in range(self.rows):

@@ -41,16 +41,17 @@ Algorithmic Plan:
     for this implementation, and I plan on applying the constraints to the simplex algorithm. In order to do this, I will first change all the attributes into one unit, which will be 
     calories per hour. Then I will apply the simplex algorithm so that the program maximizes the number of calories the user will burn with those constraints. 
 
-Timeline Plan:
+Timeline Plan (Updated on April 23, 2020):
     Deadline: April 29, 2020
-    Today: April 15, 2020
+    Today: April 23, 2020
     Tasks Completed:
         Webscraping workouts 
         Simplex Algorithm
+        Main Exercise Generator
+        User Data Management and Login Feature
+        Basic UI
     Tasks to Complete:
-        Main Exercise Generator (complete by April 18, 2020)
-        User Data Management and Login Feature (complete by April 19)
-        Basic UI (complete by April 22, 2020)
+        See TP2 Update
 
 Version Control Plan:
     All of my code is stored here: https://github.com/dyou3968/homeWorkoutProgram
@@ -61,3 +62,14 @@ Module List:
     Requests
     Tkinter
 
+TP2 Update:
+    In terms of design changes, I have created the simplex algorithm to work in a way that takes in
+    arbitrary constraints. While this was initially unexpected, it turns out that the academic research 
+    does not have a set formula for this either. I will continue researching this weekend to figure out
+    how to best maximize my use of the simplex algorithm. The UI is pretty basic, and there opportunity 
+    to improve the buttons and coloring, but this will not be the main focus of the final touches.
+
+    Main Features to Add:
+        Number of constraints based on goals of the user
+        Ability for user to see exercise descriptions and click on youtube links
+        Timing Feature that adjusts the intensity of the workout based on performance

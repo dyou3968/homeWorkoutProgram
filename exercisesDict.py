@@ -1,3 +1,10 @@
+#############################################################################
+"""
+This program scrapes the website for all the exercises and returns the 
+information as a dictionary.
+"""
+#############################################################################
+
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 

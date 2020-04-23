@@ -1,9 +1,14 @@
-#################################################
+#############################################################################
 # Simplex Algorithm
 # by David You
+#############################################################################
+
+
 #################################################
-
-
+# Note: 
+# Although the code does not have 2dList function to output values,
+# I used the print2dList function to help me see the matrices 
+# Thus, I decided to include it in my citation
 #################################################
 
 # Helper function for print2dList.
@@ -495,11 +500,6 @@ def hardChangeMinToMax(problem):
 
 #################################################
 # Test Functions
-
-# Note: 
-# Although the code does not have 2dList function to output values,
-# I used the print2dList function to help me see the matrices 
-# Thus, I decided to include it in my citation
 #################################################
 
 def testRemoveOperators():

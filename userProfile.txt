@@ -1,4 +1,1 @@
 ['david you', '1234', 'male', '160', '19', '2']
-['roy you', '9876', 'male', '150', '35', '1']
-['wendy sun', '4567', 'female', '120', '12', '1']
-['adam smith', 'smiter', 'male', '120', '35', '1']

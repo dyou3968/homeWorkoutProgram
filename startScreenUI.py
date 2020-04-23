@@ -1,3 +1,10 @@
+#############################################################################
+"""
+This is the new start screen information that the user first sees when they run
+the program. 
+"""
+#############################################################################
+
 from cmu_112_graphics import *
 from helperFunctionsUI import *
 

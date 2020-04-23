@@ -65,6 +65,9 @@ class MainScreen(Mode):
 #   body part they want to work on
 #   intensity of the workout
 #   amount of time they have to workout
+
+# Additional Inputs to add:
+#   User goal: I.e: Gain muscle or lose weight
 #############################################################################
 
     def getIntensity(self, event):

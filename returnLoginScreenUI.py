@@ -22,6 +22,7 @@ class ReturnLoginScreen(Mode):
         self.someEntriesEmpty = False
         self.userInData = True
         self.correctPassword = True
+        
 #########################################################
 # From https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
 #########################################################

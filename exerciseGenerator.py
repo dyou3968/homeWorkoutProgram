@@ -3,8 +3,7 @@
 This is the exercise generator that takes the different parameters and creates
 the workout.
 """
-
-
+"""
 # Body Parts: legs, core, back, chest, full, and plyos
 # Legs: 26 exercises
 # Core: 22 exercises
@@ -12,8 +11,7 @@ the workout.
 # Chest: 18 exercises
 # Full: 11 exercises
 # Plyos: 13 exercises
-
-
+"""
 # Exercise Information Taken from
 # https://www.hss.edu/conditions_burning-calories-with-exercise-calculating-estimated-energy-expenditure.asp
 # I will set the MET = 6 for these activities
@@ -55,13 +53,11 @@ def getCurrentUser():
 
 #############################################################################
 
-
 def getExerciseDictionary(bodyPart):
     # Returns the dictionary of all the exercises of that specific body part
     exerciseCategoryDict = convertHTMLToDictionary(key = None)
     bodyPartSpecificDict = getOnlyExercises(exerciseCategoryDict,bodyPart)
     return bodyPartSpecificDict
-
 
 def cleanUpExercise(exercise):
     # Takes in the exercise from the dictionary and removes all the numbers and white space
