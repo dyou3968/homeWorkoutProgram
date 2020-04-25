@@ -15,12 +15,14 @@ class MainScreen(Mode):
         self.bodyPart = "Input Category Here"
         [self.username, self.password, self.gender, 
             self.weight, self.age, self.activityLevel] = getCurrentUser()
-        self.workoutList = "test"
-        self.workoutDescription = ""
         self.curWorkoutDescription = []
         self.heightAdjuster = 40
+        self.time = -1
+
+        # Boolean Conditions
         self.showExercises = False
         self.showWorkoutDescription = False
+        self.showWorkoutDurationIncorrect = False
 
     def mouseMoved(self, event):
         if self.showExercises:
@@ -49,9 +51,15 @@ class MainScreen(Mode):
         (intensityBoxX1,intensityBoxX2,intensityBoxY1,intensityBoxY2) = (0,(1/4)*self.width,(6/8)*self.height,(7/8)*self.height)
         (categoryBoxX1,categoryBoxX2,categoryBoxY1,categoryBoxY2) = ((1/4)*self.width,(1/2)*self.width,(6/8)*self.height,(7/8)*self.height)
         if checkClickInBox.checkInBox(event.x,event.y,bottomX1,bottomX2,bottomY1,bottomY2):
-            if self.verifyInputs():
-                self.workoutList = workoutGenerator(getCurrentUser(),self.bodyPart,self.intensity)
-                self.showExercises = True
+            self.getTime(event)
+            if (isinstance(self.time,int)) and (self.time >= 15):
+                self.showWorkoutDurationIncorrect = False
+                if self.verifyInputs():
+                    self.workoutList, self.totalCalories = workoutGenerator(getCurrentUser(),self.bodyPart,self.intensity,self.time)
+                    self.showExercises = True
+            else:
+                self.showWorkoutDurationIncorrect = True
+
         elif checkClickInBox.checkInBox(event.x,event.y,intensityBoxX1,intensityBoxX2,intensityBoxY1,intensityBoxY2):
             self.getIntensity(event)
         elif checkClickInBox.checkInBox(event.x,event.y,categoryBoxX1,categoryBoxX2,categoryBoxY1,categoryBoxY2):
@@ -59,16 +67,8 @@ class MainScreen(Mode):
 
     def verifyInputs(self):
         if ((self.bodyPart in ["legs","core","back","chest","full","plyos"]) and 
-            ((self.intensity >= 1) and (self.intensity <= 5))):
+            ((self.intensity >= 1) and (self.intensity <= 5)) and self.time >= 15):
             return True
-
-    def userStatsPart1(self):
-        self.userInfoPart1 = f'Gender: {self.gender} \n Weight: {self.weight}'
-        return self.userInfoPart1
-
-    def userStatsPart2(self):
-        self.userInfoPart2 = f' Age: {self.age} \n Activity Level: {self.activityLevel}'
-        return self.userInfoPart2
 
 #############################################################################
 # User inputs:
@@ -93,6 +93,19 @@ class MainScreen(Mode):
         except: 
             self.intensity = "Must be whole number"
 
+    def getTime(self, event):
+        self.time = self.getUserInput('How many minutes do you plan on exercising?')
+        try:
+            self.time = int(self.time)
+            if (self.time == None):
+                self.time = "Must enter time to continue"
+            elif (self.time < 15):
+                self.time = "Minimum workout time is 15 minutes"
+            else:
+                self.time = self.time
+        except: 
+            self.time = "Duration must be whole number"
+
     def getBodyPart(self, event):
         self.bodyPart = self.getUserInput('Enter your category here \n Categories: legs, core, back, chest, full, and plyos')
         if (self.bodyPart == None):
@@ -102,6 +115,14 @@ class MainScreen(Mode):
         else:
             self.bodyPart = self.bodyPart
 
+    def userStatsPart1(self):
+        self.userInfoPart1 = f'Gender: {self.gender} \n Weight: {self.weight}'
+        return self.userInfoPart1
+
+    def userStatsPart2(self):
+        self.userInfoPart2 = f' Age: {self.age} \n Activity Level: {self.activityLevel}'
+        return self.userInfoPart2
+
 #############################################################################
 # View Portion
 #############################################################################
@@ -109,7 +130,10 @@ class MainScreen(Mode):
     def drawBottomBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = None, fill = "medium sea green")
-        inputBoxes.drawInputBoxes(self,"Generate Workout",getFontSize.fontSize(40),x1,x2,y1,y2,canvas)
+        if self.showExercises:
+            inputBoxes.drawInputBoxes(self,f'Workout Duration: {self.time} Minutes',getFontSize.fontSize(40),x1,x2,y1,y2,canvas)
+        else:
+            inputBoxes.drawInputBoxes(self,"Generate Workout",getFontSize.fontSize(40),x1,x2,y1,y2,canvas)
 
     def drawIntensityBox(self,canvas):
         (x1,x2,y1,y2) = (0,(1/4)*self.width,(6/8)*self.height,(7/8)*self.height)
@@ -133,13 +157,13 @@ class MainScreen(Mode):
 
     def drawHeader(self,canvas):
         (x1,x2,y1,y2) = ((1/4)*self.width,(3/4)*self.width,(1/16)*self.height-self.heightAdjuster,(2/16)*self.height-self.heightAdjuster)
-        inputBoxes.drawInputBoxes(self,"Exercise Generated:",getFontSize.fontSize(40),x1,x2,y1,y2,canvas)
+        inputBoxes.drawInputBoxes(self,f"Estimated Calories Burned: {self.totalCalories}",getFontSize.fontSize(30),x1,x2,y1,y2,canvas)
 
     def drawWorkoutText(self,canvas):
         start = 2
         for i in range(len(self.workoutList)):
             exercise = self.workoutList[i][0]
-            (x1,x2,y1,y2) = ((1/4)*self.width,(3/4)*self.width,(start/16)*self.height - self.heightAdjuster,((start+1)/16)*self.height - self.heightAdjuster)
+            (x1,x2,y1,y2) = ((1/3)*self.width,(2/3)*self.width,(start/16)*self.height - self.heightAdjuster,((start+1)/16)*self.height - self.heightAdjuster)
             canvas.create_rectangle(x1,y1,x2,y2, outline = "white", fill = "white")
             inputBoxes.drawInputBoxes(self,exercise,getFontSize.fontSize(24),x1,x2,y1,y2,canvas)
             start += 1
@@ -153,6 +177,10 @@ class MainScreen(Mode):
             inputBoxes.drawInputBoxes(self,line,getFontSize.fontSize(14),x1,x2,y1,y2,canvas)
             start += 1
 
+    def drawWorkoutDurationIncorrect(self,canvas):
+        canvas.create_text(self.width/2,self.height/2,text = f'{self.time}', fill = "red", font = getFontSize.fontSize(40))
+
+
     def redrawAll(self, canvas):
         self.drawBottomBox(canvas)
         self.drawIntensityBox(canvas)
@@ -164,10 +192,5 @@ class MainScreen(Mode):
             self.drawHeader(canvas)
         if self.showWorkoutDescription:
             self.drawWorkoutDescription(canvas)
-
-class MyApp(ModalApp):
-    def appStarted(self):
-        self.MainScreen = MainScreen()
-        self.setActiveMode(self.MainScreen)
-
-app = MyApp(width=1000, height=800)
+        if self.showWorkoutDurationIncorrect:
+            self.drawWorkoutDurationIncorrect(canvas)
