@@ -27,11 +27,18 @@ class MainScreen(Mode):
         self.timerPaused = False
         self.showWorkoutDuration = False
 
+        # Image Portion
+        image = 'backAndNextButtons.jpg'
+        # Image taken from https://stock.adobe.com/images/next-and-lbackr-web-buttons-internet-continue-click-here-go/29583568
+        self.image = self.loadImage(image)
+        self.resizer = 2/5
+        self.backButton = self.image.crop((60,240,440,340))
+        self.backButtonScaled = self.scaleImage(self.backButton,self.resizer)
+
+
 #############################################################################
 # Controller Portion
 #############################################################################
-
-
 
     def mouseMoved(self, event):
         if self.showExercises:
@@ -54,7 +61,7 @@ class MainScreen(Mode):
         self.curWorkoutDescription = (text.split("."))
         for i in range(len(self.curWorkoutDescription)):
             line = self.curWorkoutDescription[i]
-            if (len(line)) > 150:
+            if (len(line)) > 130:
                 words = line.split(" ")
                 mid = len(words)//2
                 frontHalf = words[:mid]
@@ -70,10 +77,13 @@ class MainScreen(Mode):
         return ((x1 <= x <= x2) and (y1 <= y <= y2))
 
     def mousePressed(self, event):
+        [self.username, self.password, self.gender, 
+        self.weight, self.age, self.activityLevel] = getCurrentUser()
         if (not self.showExercises):
             (bottomX1,bottomX2,bottomY1,bottomY2) = generixBoxDimensions.lowerBoxDimensions(self)
             (intensityBoxX1,intensityBoxX2,intensityBoxY1,intensityBoxY2) = (0,(1/4)*self.width,(6/8)*self.height,(7/8)*self.height)
             (categoryBoxX1,categoryBoxX2,categoryBoxY1,categoryBoxY2) = ((1/4)*self.width,(1/2)*self.width,(6/8)*self.height,(7/8)*self.height)
+            (backX1,backX2,backY1,backY2) = generixBoxDimensions.upperLeftBoxDimensions(self)
             if checkClickInBox.checkInBox(event.x,event.y,bottomX1,bottomX2,bottomY1,bottomY2):
                 self.getTime(event)
                 if not self.verifyBodyPartAndIntensityInput():
@@ -88,6 +98,9 @@ class MainScreen(Mode):
                 self.getIntensity(event)
             elif checkClickInBox.checkInBox(event.x,event.y,categoryBoxX1,categoryBoxX2,categoryBoxY1,categoryBoxY2):
                 self.getBodyPart(event)
+            elif checkClickInBox.checkInBox(event.x,event.y,backX1,backX2,backY1,backY2):
+                self.app.setActiveMode(self.app.ReturnLoginScreen)
+
         else:
             (endX1,endX2,endY1,endY2) = (0,(1/4)*self.width,(7/8)*self.height,self.height)
             (pauseX1,pauseX2,pauseY1,pauseY2) = ((3/4)*self.width,self.width,(7/8)*self.height,self.height)
@@ -116,9 +129,6 @@ class MainScreen(Mode):
         else:
             message = f"You finished the workout in {minutesLeft} minutes and {str(secondsLeft)[:-1]} seconds"
         return message
-
-    def getTimerDelay(self):
-        return self.timerDelay
 
     def setTimer(self):
         # Sets the minutes and seconds for the program
@@ -165,7 +175,6 @@ class MainScreen(Mode):
 #   body part they want to work on
 #   intensity of the workout
 #   amount of time they have to workout
-
 #############################################################################
 
     def getIntensity(self, event):
@@ -289,6 +298,11 @@ class MainScreen(Mode):
     def drawWorkoutDurationMessage(self,canvas):
         canvas.create_text(self.width/2,self.height/2,text = f'{self.calculateWorkoutDuration()}', fill = "forest green", font = getFontSize.fontSize(32))
 
+    def drawBackButton(self,canvas):
+        (x1,x2,y1,y2) = generixBoxDimensions.upperLeftBoxDimensions(self)
+        cx,cy = (x1+x2)/2,(y1+y2)/2
+        canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.backButtonScaled))
+
 
     def redrawAll(self, canvas):
         self.drawUserInputBoxes(canvas)
@@ -298,6 +312,7 @@ class MainScreen(Mode):
             self.drawHeader(canvas)
         else:
             self.drawBottomBoxPreWorkout(canvas)
+            self.drawBackButton(canvas)
         if self.showWorkoutDescription:
             self.drawWorkoutDescription(canvas)
         if self.showWorkoutInputsIncomplete:

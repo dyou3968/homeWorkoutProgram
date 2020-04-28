@@ -66,6 +66,13 @@ class inputBoxes(object):
             canvas.create_text((x1+x2)/2,(y1+y2)/2,text = text, font = font)
 
 class generixBoxDimensions(object):
+    def upperLeftBoxDimensions(self):
+        x1 = (1/20)*self.width
+        x2 = (4/20)*self.width
+        y1 = (1/20)*self.height
+        y2 = (2/20)*self.height
+        return (x1,x2,y1,y2)
+
     def lowerRightBoxDimensions(self):
         x1 = (15/20)*self.width
         x2 = (18/20)*self.width

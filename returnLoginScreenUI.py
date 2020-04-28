@@ -184,38 +184,29 @@ class ReturnLoginScreen(Mode):
 # View Portion
 #############################################################################
 
-    def createTextInBoxes(self,row,col,font,x1,x2,y1,y2,canvas):
-            if (row == 0) and (col == 0):
-                inputBoxes.drawInputBoxes(self,"Username",font,x1,x2,y1,y2,canvas)
-            if (row == 1) and (col == 0):
-                inputBoxes.drawInputBoxes(self,"Password",font,x1,x2,y1,y2,canvas)
-            # User Input column
-            if (row == 0) and (col == 1):
-                inputBoxes.drawInputBoxes(self,self.username,font,x1,x2,y1,y2,canvas)
-            if (row == 1) and (col == 1):
-                inputBoxes.drawInputBoxes(self,self.password,font,x1,x2,y1,y2,canvas)
-
-    def createTextBoxes(self,canvas):
+    def drawTextBoxes(self,canvas):
+        textList = [["Username",self.username],["Password",self.password]]
         for row in range(self.rows):
             for col in range(self.cols):
                 (x1, y1, x2, y2) = modelToView.getCellBounds(self,row,col)
-                font = "Times_New_Roman 36 bold"
-                self.createTextInBoxes(row,col,font,x1,x2,y1,y2,canvas)
+                text = textList[row][col]
+                inputBoxes.drawInputBoxes(self,text,getFontSize.fontSize(36),x1,x2,y1,y2,canvas)
                 canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
 
-    def createNextBox(self,canvas):
+    def drawNextBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         cx,cy = (x1+x2)/2,(y1+y2)/2
         canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.nextButtonScaled))
 
-    def createBackBox(self,canvas):
+    def drawBackBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         cx,cy = (x1+x2)/2,(y1+y2)/2
         canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.backButtonScaled))
+
     def redrawAll(self,canvas):
-        self.createTextBoxes(canvas)
-        self.createNextBox(canvas)
-        self.createBackBox(canvas)
+        self.drawTextBoxes(canvas)
+        self.drawNextBox(canvas)
+        self.drawBackBox(canvas)
         if (self.someEntriesEmpty):
             canvas.create_text(self.width/2,(9/10)*self.height, fill = "red",
                             text = "Must enter all entries to continue", font = getFontSize.fontSize(30))
@@ -225,3 +216,16 @@ class ReturnLoginScreen(Mode):
         if (not self.correctPassword):
             canvas.create_text(self.width/2,(9/10)*self.height, fill = "red",
                             text = "Incorrect Password", font = getFontSize.fontSize(30))
+
+
+
+
+
+
+# class MyApp(ModalApp):
+#     def appStarted(self):
+#         self.ReturnLoginScreen = ReturnLoginScreen()
+#         self.setActiveMode(self.ReturnLoginScreen)
+#         self.timerDelay = 100
+
+# app = MyApp(width=1000, height=800)

@@ -84,12 +84,12 @@ class StartScreen(Mode):
 #############################################################################
 
 
-    def createNewUserBox(self,canvas):
+    def drawNewUserBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
         inputBoxes.drawInputBoxes(self,"New User",getFontSize.fontSize(18),x1,x2,y1,y2,canvas)
 
-    def createReturningUserBox(self,canvas):
+    def drawReturningUserBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
         inputBoxes.drawInputBoxes(self,"Returning User",getFontSize.fontSize(18),x1,x2,y1,y2,canvas)
@@ -100,9 +100,9 @@ class StartScreen(Mode):
     def drawCreator(self,canvas):
         canvas.create_text(self.width/2,self.height*7/8,text = self.creator,font = getFontSize.fontSize(40), fill = "black")
 
-    def createUserBoxes(self,canvas):
-        self.createNewUserBox(canvas)
-        self.createReturningUserBox(canvas)
+    def drawUserBoxes(self,canvas):
+        self.drawNewUserBox(canvas)
+        self.drawReturningUserBox(canvas)
 
     def drawTitle(self,canvas):
         canvas.create_text(self.width/2,self.height*1/6,text = self.message,font = "Times_New_Roman 90 bold italic", fill = "blue4")
@@ -126,7 +126,7 @@ class StartScreen(Mode):
     def redrawAll(self,canvas):
         self.drawBarbellLogo(canvas)
         self.drawTitle(canvas)
-        self.createUserBoxes(canvas)
+        self.drawUserBoxes(canvas)
         self.drawSprites(canvas)
         self.drawDescription(canvas)
         self.drawCreator(canvas)
