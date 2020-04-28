@@ -17,6 +17,7 @@ class MainScreen(Mode):
             self.weight, self.age, self.activityLevel] = getCurrentUser()
         self.curWorkoutDescription = []
         self.heightAdjuster = 40
+        self.workoutMultiplier = 1
 
         # Boolean Conditions
         self.showExercises = False
@@ -24,7 +25,7 @@ class MainScreen(Mode):
         self.showWorkoutDurationIncorrect = False
         self.showWorkoutInputsIncomplete = False
         self.timerPaused = False
-        
+        self.showWorkoutDuration = False
 
 #############################################################################
 # Controller Portion
@@ -92,11 +93,29 @@ class MainScreen(Mode):
             (pauseX1,pauseX2,pauseY1,pauseY2) = ((3/4)*self.width,self.width,(7/8)*self.height,self.height)
             if checkClickInBox.checkInBox(event.x,event.y,endX1,endX2,endY1,endY2):
                 self.showExercises = False
+                self.calculateWorkoutDuration()
+                self.showWorkoutDuration = True
+                self.showWorkoutDescription = False
             if checkClickInBox.checkInBox(event.x,event.y,pauseX1,pauseX2,pauseY1,pauseY2):
                 if (not self.timerPaused):
                     self.timerPaused = True
                 else:
                     self.timerPaused = False
+
+    def calculateWorkoutDuration(self):
+        minutesLeft = ((self.time)*600 - self.timer) // 600
+        secondsLeft = ((self.time)*600 - self.timer) % 600
+        if minutesLeft == 0:
+            message = (f'Workout Canceled')
+        elif self.minutes > 5:
+            self.workoutMultiplier *= 1.005
+            message = (f'''You finished the workout in {minutesLeft} minutes and {str(secondsLeft)[:-1]} seconds 
+                                        Workout Adjusted''')
+        elif secondsLeft//10 == 0:
+            message = f"You finished the workout in {minutesLeft} minutes and 0{str(secondsLeft)[:-1]} seconds"
+        else:
+            message = f"You finished the workout in {minutesLeft} minutes and {str(secondsLeft)[:-1]} seconds"
+        return message
 
     def getTimerDelay(self):
         return self.timerDelay
@@ -134,9 +153,10 @@ class MainScreen(Mode):
 
     def startWorkout(self):
         # Starts the workout for the user
+        self.showWorkoutDuration = False
         self.showWorkoutInputsIncomplete = False
         self.showWorkoutDurationIncorrect = False
-        self.workoutList, self.totalCalories = workoutGenerator(getCurrentUser(),self.bodyPart,self.intensity,self.time)
+        self.workoutList, self.totalCalories = workoutGenerator(getCurrentUser(),self.bodyPart,self.intensity,self.time,self.workoutMultiplier)
         self.showExercises = True
         self.setTimer()
 
@@ -266,6 +286,10 @@ class MainScreen(Mode):
     def drawWorkoutInputsIncomplete(self,canvas):
         canvas.create_text(self.width/2,self.height/2,text = 'Must enter category \n and intensity to continue', fill = "red", font = getFontSize.fontSize(40))
 
+    def drawWorkoutDurationMessage(self,canvas):
+        canvas.create_text(self.width/2,self.height/2,text = f'{self.calculateWorkoutDuration()}', fill = "forest green", font = getFontSize.fontSize(32))
+
+
     def redrawAll(self, canvas):
         self.drawUserInputBoxes(canvas)
         if self.showExercises:
@@ -280,7 +304,8 @@ class MainScreen(Mode):
             self.drawWorkoutInputsIncomplete(canvas)
         if self.showWorkoutDurationIncorrect:
             self.drawWorkoutDurationIncorrect(canvas)
-
+        if self.showWorkoutDuration:
+            self.drawWorkoutDurationMessage(canvas)
 
 # class MyApp(ModalApp):
 #     def appStarted(self):

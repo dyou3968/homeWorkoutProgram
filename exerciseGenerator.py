@@ -193,7 +193,11 @@ def getTotalRepsPerExercise(calories,bodyPart):
         caloriesPerRep = 1.2
     return int(calories/caloriesPerRep)
 
-def workoutGenerator(user,bodyPart,intensity,time):
+def getCaloriesBurned(rawCaloriesBurned,workoutMultiplier):
+    refinedCaloriesBurned = (rawCaloriesBurned+random.randrange(1,10))*workoutMultiplier
+    return refinedCaloriesBurned
+
+def workoutGenerator(user,bodyPart,intensity,time,workoutMultiplier):
     # Get the total workout plan and calories
     numExercises = min(int(time)//5,7)
     exerciseList = pickRandomExercises(numExercises,bodyPart)
@@ -204,9 +208,10 @@ def workoutGenerator(user,bodyPart,intensity,time):
     for i in range(len(exerciseList)):
         exercise = exerciseList[i][0]
         description = exerciseList[i][1]
-        caloriesBurned = maximizeNumberOfCaloriesBurnedPerExercise(exercise,gender,weight,age,activityLevel,intensity,timePerExercise)
-        numReps = getTotalRepsPerExercise(caloriesBurned,bodyPart)
+        rawCaloriesBurned = (maximizeNumberOfCaloriesBurnedPerExercise(exercise,gender,weight,age,activityLevel,intensity,timePerExercise))
+        refinedCaloriesBurned = int(getCaloriesBurned(rawCaloriesBurned,workoutMultiplier))
+        numReps = getTotalRepsPerExercise(refinedCaloriesBurned,bodyPart)
         exerciseReps = (f'{numReps} reps of {exercise}')
-        workout.append([exerciseReps,description,caloriesBurned])
-        totalCalories += caloriesBurned
+        workout.append([exerciseReps,description,refinedCaloriesBurned])
+        totalCalories += refinedCaloriesBurned
     return workout,totalCalories
