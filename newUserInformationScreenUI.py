@@ -4,6 +4,10 @@ This is the new user information screen where the user inputs their information.
 The information is then stored into a txt file, which will be used by the other 
 files.
 """
+
+# Tools and inspiration taken from 
+# https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
+# https://www.cs.cmu.edu/~112/notes/notes-animations-part2.html#subclassingApp
 #############################################################################
 
 from cmu_112_graphics import *
@@ -22,7 +26,20 @@ class NewUserInformationScreen(Mode):
         self.age = "Click here"
         self.activityLevel = "Click here"
 
+        # Boolean Conditions
         self.someEntriesEmpty = False
+
+        # Image Portion
+        image = 'backAndNextButtons.jpg'
+        # Image taken from https://stock.adobe.com/images/next-and-lbackr-web-buttons-internet-continue-click-here-go/29583568
+        self.image = self.loadImage(image)
+        self.nextButton = self.image.crop((60,60,440,160))
+        self.resizer = 2/5
+        self.nextButtonScaled = self.scaleImage(self.nextButton,self.resizer)
+        self.backButton = self.image.crop((60,240,440,340))
+        self.backButtonScaled = self.scaleImage(self.backButton,self.resizer)
+
+
 
 #############################################################################
 # Control Portion
@@ -184,54 +201,27 @@ class NewUserInformationScreen(Mode):
 # View Portion
 #############################################################################
 
-    def drawInputBoxes(self,text,font,x1,x2,y1,y2,canvas):
-        canvas.create_text((x1+x2)/2,(y1+y2)/2,text = text, font = font)
-
-    def createTextInBoxes(self,row,col,font,x1,x2,y1,y2,canvas):
-        # Default Column
-        if (row == 0) and (col == 0):
-            self.drawInputBoxes("Username",font,x1,x2,y1,y2,canvas)
-        if (row == 1) and (col == 0):
-            self.drawInputBoxes("Password",font,x1,x2,y1,y2,canvas)
-        if (row == 2) and (col == 0):
-            self.drawInputBoxes("Gender",font,x1,x2,y1,y2,canvas)
-        if (row == 3) and (col == 0):
-            self.drawInputBoxes("Weight",font,x1,x2,y1,y2,canvas)
-        if (row == 4) and (col == 0):
-            self.drawInputBoxes("Age",font,x1,x2,y1,y2,canvas)
-        if (row == 5) and (col == 0):
-            self.drawInputBoxes("Activity Level",font,x1,x2,y1,y2,canvas)
-        # User Input column
-        if (row == 0) and (col == 1):
-            self.drawInputBoxes(self.username,font,x1,x2,y1,y2,canvas)
-        if (row == 1) and (col == 1):
-            self.drawInputBoxes(self.password,font,x1,x2,y1,y2,canvas)
-        if (row == 2) and (col == 1):
-            self.drawInputBoxes(self.gender,font,x1,x2,y1,y2,canvas)
-        if (row == 3) and (col == 1):
-            self.drawInputBoxes(self.weight,font,x1,x2,y1,y2,canvas)
-        if (row == 4) and (col == 1):
-            self.drawInputBoxes(self.age,font,x1,x2,y1,y2,canvas)
-        if (row == 5) and (col == 1):
-            self.drawInputBoxes(self.activityLevel,font,x1,x2,y1,y2,canvas)
-
     def createTextBoxes(self,canvas):
+        self.textList = [["Username",self.username],["Password",self.password],["Gender",self.gender],
+                        ["Weight",self.weight],["Age",self.age],["Activity Level", self.activityLevel]]
         for row in range(self.rows):
             for col in range(self.cols):
                 (x1, y1, x2, y2) = modelToView.getCellBounds(self,row,col)
                 font = "Times_New_Roman 28 bold"
-                self.createTextInBoxes(row,col,font,x1,x2,y1,y2,canvas)
+                text = self.textList[row][col]
+                inputBoxes.drawInputBoxes(canvas,text,getFontSize.fontSize(32),x1,x2,y1,y2,canvas)
                 canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
 
     def createNextBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
-        canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        self.drawInputBoxes("Next","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
+        cx,cy = (x1+x2)/2,(y1+y2)/2
+        canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.nextButtonScaled))
 
     def createBackBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
-        canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        self.drawInputBoxes("Back","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
+        cx,cy = (x1+x2)/2,(y1+y2)/2
+        canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.backButtonScaled))
+
 
     def redrawAll(self,canvas):
         self.createTextBoxes(canvas)
@@ -240,3 +230,12 @@ class NewUserInformationScreen(Mode):
         if (self.someEntriesEmpty):
             canvas.create_text(self.width/2,(9/10)*self.height, fill = "red", 
                             text = "Must enter all entries to continue", font = getFontSize.fontSize(30))
+
+
+# class MyApp(ModalApp):
+#     def appStarted(self):
+#         self.NewUserInformationScreen = NewUserInformationScreen()
+#         self.setActiveMode(self.NewUserInformationScreen)
+#         self.timerDelay = 1000
+
+# app = MyApp(width=1000, height=800)

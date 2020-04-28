@@ -68,13 +68,13 @@ class inputBoxes(object):
 class generixBoxDimensions(object):
     def lowerRightBoxDimensions(self):
         x1 = (15/20)*self.width
-        x2 = (19/20)*self.width
+        x2 = (18/20)*self.width
         y1 = (18/20)*self.height
         y2 = (19/20)*self.height
         return (x1,x2,y1,y2)
 
     def lowerLeftBoxDimensions(self):
-        x1 = (1/20)*self.width
+        x1 = (2/20)*self.width
         x2 = (5/20)*self.width
         y1 = (18/20)*self.height
         y2 = (19/20)*self.height

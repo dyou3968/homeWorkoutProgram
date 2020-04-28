@@ -20,5 +20,6 @@ class MyApp(ModalApp):
         self.NewUserInformationScreen = NewUserInformationScreen()
         self.MainScreen = MainScreen()
         self.setActiveMode(self.StartScreen)
-
+        self.timerDelay = 100
+        
 app = MyApp(width=1000, height=800)

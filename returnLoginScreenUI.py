@@ -9,6 +9,7 @@ screen also maps to this page for the user to login.
 
 from cmu_112_graphics import *
 from helperFunctionsUI import *
+from mainScreenUI import *
 
 class ReturnLoginScreen(Mode):
     def appStarted(self):
@@ -19,10 +20,21 @@ class ReturnLoginScreen(Mode):
         self.username = "Click here"
         self.password = "Click here"
 
+        # Boolean Conditions
         self.someEntriesEmpty = False
         self.userInData = True
         self.correctPassword = True
-        
+
+        # Image Portion
+        image = 'backAndNextButtons.jpg'
+        # Image taken from https://stock.adobe.com/images/next-and-lbackr-web-buttons-internet-continue-click-here-go/29583568
+        self.image = self.loadImage(image)
+        self.nextButton = self.image.crop((60,60,440,160))
+        self.resizer = 2/5
+        self.nextButtonScaled = self.scaleImage(self.nextButton,self.resizer)
+        self.backButton = self.image.crop((60,240,440,340))
+        self.backButtonScaled = self.scaleImage(self.backButton,self.resizer)
+
 #########################################################
 # From https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
 #########################################################
@@ -61,7 +73,7 @@ class ReturnLoginScreen(Mode):
                 self.correctPassword = False
             else:
                 self.removeOtherUsers("currentUser.txt")
-                self.addUserInformation("currentUser.txt", self.UserProfile(userData,self.username))            
+                self.addUserInformation("currentUser.txt", self.UserProfile(userData,self.username))          
                 self.app.setActiveMode(self.app.MainScreen)
                 
         else:
@@ -193,14 +205,13 @@ class ReturnLoginScreen(Mode):
 
     def createNextBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
-        canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        inputBoxes.drawInputBoxes(self,"Next","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
+        cx,cy = (x1+x2)/2,(y1+y2)/2
+        canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.nextButtonScaled))
 
     def createBackBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
-        canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
-        inputBoxes.drawInputBoxes(self,"Back","Times_New_Roman 20 bold",x1,x2,y1,y2,canvas)
-
+        cx,cy = (x1+x2)/2,(y1+y2)/2
+        canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.backButtonScaled))
     def redrawAll(self,canvas):
         self.createTextBoxes(canvas)
         self.createNextBox(canvas)
