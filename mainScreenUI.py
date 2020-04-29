@@ -328,7 +328,7 @@ class MainScreen(Mode):
         start = 2
         for i in range(len(self.workoutList)):
             exercise = self.workoutList[i][0]
-            (x1,x2,y1,y2) = ((1/3)*self.width,(2/3)*self.width,(start/16)*self.height - self.heightAdjuster,((start+1)/16)*self.height - self.heightAdjuster)
+            (x1,x2,y1,y2) = ((2/5)*self.width,(3/5)*self.width,(start/16)*self.height - self.heightAdjuster,((start+1)/16)*self.height - self.heightAdjuster)
             canvas.create_rectangle(x1,y1,x2,y2, outline = "white", fill = "white")
             inputBoxes.drawInputBoxes(self,exercise,getFontSize.fontSize(24),x1,x2,y1,y2,canvas)
             start += 1
