@@ -1,2 +1,2 @@
-['david you', '1234', 'male', '160', '19', '2']
-['adam smith', 'smith', 'male', '220', '40', '1']
+['fat thor', 'stormbreaker', 'male', '220', '30', '1']
+['thor', 'mjolnir', 'male', '180', '25', '3']
