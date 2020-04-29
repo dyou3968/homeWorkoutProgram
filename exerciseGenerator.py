@@ -169,7 +169,7 @@ Constraints:
 {coefficientX1L4}x1 + {coefficientX2L4}x2 <= {constraint4}
 x1, x2 >= 0
 ''' 
-    solution = getOptimizedValue(problem)*5
+    solution = getOptimizedValue(problem)*4
     return solution
 
 def getTotalRepsPerExercise(calories,bodyPart):
@@ -189,7 +189,7 @@ def getTotalRepsPerExercise(calories,bodyPart):
     elif (bodyPart == "full"):
         caloriesPerRep = 0.80     
     elif (bodyPart == "plyos"):
-        caloriesPerRep = 1.2
+        caloriesPerRep = 0.9
     return int(calories/caloriesPerRep)
 
 def getCaloriesBurned(rawCaloriesBurned,workoutMultiplier):
