@@ -18,3 +18,5 @@ Project Libraries:
 
 Shortcut Commands:
     If the user has already inputed their data from before, the program stores their data so they do not need to register as a new user each time
+    There are two sample profiles to use, 'thor' (password: mjolnir) and 'fat thor' (password: stormbreaker). These can be used to show how the 
+    program adjusts to users with different attributes.
