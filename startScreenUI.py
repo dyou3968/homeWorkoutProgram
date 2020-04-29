@@ -21,9 +21,9 @@ class StartScreen(Mode):
         self.description = '''A home workout program designed \n to help you stay fit during quaratine'''
         self.creator = 'By David You'
 
-#############################################################################
+############################################################
 # Running Animation
-#############################################################################
+############################################################
         # Taken from https://www.shutterstock.com/search/running%2Bsprite?section=1&image_type=vector&safe=true&search_source=base_related_searches&saveFiltersLink=true
         self.runningImage = "runningAnimation.png"
         self.spriteStripLeft = self.loadImage(self.runningImage)
@@ -43,9 +43,9 @@ class StartScreen(Mode):
         self.leftY = random.randrange(self.runningBounds[0],self.runningBounds[1])
         self.rightY = random.randrange(self.runningBounds[0],self.runningBounds[1])
 
-#############################################################################
+############################################################
 # Logo
-#############################################################################
+############################################################
         # Taken from https://www.shutterstock.com/search/barbell+logo
         barbellImage = 'barbellLogo.webp'
         self.image = self.loadImage(barbellImage)
@@ -54,13 +54,12 @@ class StartScreen(Mode):
         self.barbellScaled = self.scaleImage(self.barbell,self.resizer)
 
 
-
 #############################################################################
 # Controller Portion
 #############################################################################
 
     def timerFired(self):
-        #print(self.image.size)
+        # Creates the animation of the left and right runners
         self.spriteCounterLeft = (10 + self.spriteCounterLeft) % len(self.spritesLeft)
         self.spriteCounterRight = (5 + self.spriteCounterRight) % len(self.spritesRight)
         self.leftX = (self.leftX - 30) % self.width
@@ -70,7 +69,6 @@ class StartScreen(Mode):
         if self.rightX >= self.width-10:
             self.rightY = random.randrange(self.runningBounds[0],self.runningBounds[1])
 
-
     def mousePressed(self, event):
         (returnUserx1,returnUserx2,returnUsery1,returnUsery2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         (newUserx1,newUserx2,newUsery1,newUsery2) = generixBoxDimensions.lowerRightBoxDimensions(self)
@@ -79,37 +77,33 @@ class StartScreen(Mode):
         if checkClickInBox.checkInBox(event.x, event.y,returnUserx1,returnUserx2,returnUsery1,returnUsery2):
             self.app.setActiveMode(self.app.ReturnLoginScreen)
 
+
 #############################################################################
 # View Portion
 #############################################################################
 
-
     def drawNewUserBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
-        canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
+        canvas.create_rectangle(x1,y1,x2,y2, outline = "black", fill = "light goldenrod")
         inputBoxes.drawInputBoxes(self,"New User",getFontSize.fontSize(18),x1,x2,y1,y2,canvas)
 
     def drawReturningUserBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
-        canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
+        canvas.create_rectangle(x1,y1,x2,y2, outline = "black", fill = "dodger blue")
         inputBoxes.drawInputBoxes(self,"Returning User",getFontSize.fontSize(18),x1,x2,y1,y2,canvas)
-
-    def drawDescription(self,canvas):
-        canvas.create_text(self.width/2,self.height*5/6-50,text = self.description,font = getFontSize.fontSize(30), fill = "black")
-
-    def drawCreator(self,canvas):
-        canvas.create_text(self.width/2,self.height*7/8,text = self.creator,font = getFontSize.fontSize(40), fill = "black")
 
     def drawUserBoxes(self,canvas):
         self.drawNewUserBox(canvas)
         self.drawReturningUserBox(canvas)
 
     def drawTitle(self,canvas):
-        canvas.create_text(self.width/2,self.height*1/6,text = self.message,font = "Times_New_Roman 90 bold italic", fill = "blue4")
-
-    def drawBarbellLogo(self,canvas):
         cx,cy = self.width/2,self.height*1/6 - 20
         canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.barbellScaled))
+        canvas.create_text(self.width/2,self.height*1/6,text = self.message,font = "Times_New_Roman 90 bold italic", fill = "blue4")
+
+    def drawDescription(self,canvas):
+        canvas.create_text(self.width/2,self.height*5/6-50,text = self.description,font = getFontSize.fontSize(30), fill = "black")
+        canvas.create_text(self.width/2,self.height*7/8,text = self.creator,font = getFontSize.fontSize(40), fill = "black")
 
     def drawRunningSpriteLeft(self,canvas):
         sprite = self.spritesLeft[self.spriteCounterLeft]
@@ -124,11 +118,7 @@ class StartScreen(Mode):
         self.drawRunningSpriteRight(canvas)
 
     def redrawAll(self,canvas):
-        self.drawBarbellLogo(canvas)
         self.drawTitle(canvas)
         self.drawUserBoxes(canvas)
         self.drawSprites(canvas)
         self.drawDescription(canvas)
-        self.drawCreator(canvas)
-
-

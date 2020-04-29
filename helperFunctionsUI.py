@@ -4,15 +4,13 @@ These are the universal helper functions that are useful for every single file.
 """
 #############################################################################
 
+#########################################################
 # cmu_112_graphics notes and documentation taken from 
 # https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
 # https://www.cs.cmu.edu/~112/notes/notes-animations-part2.html
-
+#########################################################
 from cmu_112_graphics import *
 
-#########################################################
-# Adapted from https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
-#########################################################
 class viewToModel(object):
     def pointInGrid(self, x, y):
         # return True if (x, y) is inside the grid defined by self.

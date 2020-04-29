@@ -22,11 +22,6 @@ from exercisesDict import *
 from exerciseBodyPartSpecificExercises import *
 from simplexProgram import *
 
-
-
-
-
-
 def roundHalfUp(d):
     # From https://www.cs.cmu.edu/~112/notes/notes-variables-and-functions.html
     # Round to nearest with ties going away from zero.
@@ -41,6 +36,7 @@ def roundHalfUp(d):
 #############################################################################
 
 def getUserList(path):
+    # Gets the user text list
     with open(path,'rt') as f:
         return f.read()
 
@@ -57,6 +53,7 @@ def cleanUpUserData(user):
     return modifiedUserInfoList
 
 def getCurrentUser():
+    # Retrieves the current user in the currentUser text file
     user = getUserList("currentUser.txt")
     for line in user.splitlines():
         modifiedUser = cleanUpUserData(line)
@@ -73,8 +70,10 @@ def getExerciseDictionary(bodyPart):
 
 def cleanUpExercise(exercise):
     # Takes in the exercise from the dictionary and removes all the numbers and white space
+    # Returns the exercise
     entries = exercise.split(" ")
-    return entries[1] 
+    cleanedExercise = entries[1]
+    return cleanedExercise
 
 def getExerciseAndDescriptions(bodyPart):
     # Returns all the exercises in a 2dlist, with the exercise in the first index
@@ -110,10 +109,9 @@ def caloriesBurnedPerMinuteVersion1(weight):
 # Information taken from https://www.healthline.com/health/how-many-calories-do-squats-burn#calories-burned
 # Calories burned per minute = .0175 x MET x weight (in kilograms)
 # As stated above, the MET for these exercises will be 5
-# Body Parts: legs, core, back, chest, full, and plyos
 # This will act as part of constraint 1
     met = 5
-    weightInKg = int(weight)/2.2
+    weightInKg = (weight)/2.2
     return (0.0175*met*weightInKg)
 
 def caloriesBurnedPerMinuteVersion2(weight):
@@ -121,14 +119,14 @@ def caloriesBurnedPerMinuteVersion2(weight):
 # These exercises will be categorized as "calisthenics: moderate"
 # This will act as part of constraint 2
     weightCalorieMultiplier = 1.08 #This number was determined using the data
-    return (weightCalorieMultiplier*int(weight)/30)
+    return (weightCalorieMultiplier*(weight)/30)
 
 def caloriesBurnedPerMinuteVersion3(weight):
 # Information taken from https://www.urmc.rochester.edu/encyclopedia/content.aspx?ContentTypeID=41&ContentID=CalorieBurnCalc&CalorieBurnCalc_Parameters=160
 # These exercises will be categorized as "calisthenics: moderate"
 # This will act as part of constraint 3
     weightCalorieMultiplier = 324/60 #This number was determined using the data
-    return (weightCalorieMultiplier*int(weight)/150)
+    return (weightCalorieMultiplier*(weight)/150)
 
 def caloriesBurnedPerMinuteVersion4(weight):
 # Information taken from https://www.mdanderson.org/publications/focused-on-health/How-to-determine-calorie-burn.h27Z1591413.html
@@ -136,17 +134,18 @@ def caloriesBurnedPerMinuteVersion4(weight):
 # This will act as part of constraint 4
     dataFor160lbs,datafor200lbs,datafor240lbs = 365/60,455/60,545/60
     averagedData = (dataFor160lbs + datafor200lbs*(160/200) + datafor240lbs*(160/240))/3
-    return (averagedData*160/int(weight))
+    return (averagedData*160/(weight))
 
 def maximizeNumberOfCaloriesBurnedPerExercise(exercise,gender,weight,age,activityLevel,intensity,time):
-    # I want to maximize the number of calories burned per exercise
+    # Maximizes the number of calories burned per exercise given the values and constraints
     gendermultiplier = getGenderMultiplier(gender)
-    constraint1 = (roundHalfUp(caloriesBurnedPerMinuteVersion1(weight)*int(time)))
-    constraint2 = (roundHalfUp(caloriesBurnedPerMinuteVersion2(weight)*int(time)))
-    constraint3 = (roundHalfUp(caloriesBurnedPerMinuteVersion3(weight)*int(time)))
-    constraint4 = (roundHalfUp(caloriesBurnedPerMinuteVersion4(weight)*int(time)))
-
     weight,age,activityLevel,intensity = int(weight),int(age),int(activityLevel),int(intensity)
+
+    #Constraints
+    constraint1 = (roundHalfUp(caloriesBurnedPerMinuteVersion1(weight)*(time)))
+    constraint2 = (roundHalfUp(caloriesBurnedPerMinuteVersion2(weight)*(time)))
+    constraint3 = (roundHalfUp(caloriesBurnedPerMinuteVersion3(weight)*(time)))
+    constraint4 = (roundHalfUp(caloriesBurnedPerMinuteVersion4(weight)*(time)))
 
     # Line 1
     coefficientX1L1 = roundHalfUp(6 - intensity)

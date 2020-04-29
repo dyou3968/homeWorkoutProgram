@@ -3,7 +3,6 @@
 # by David You
 #############################################################################
 
-
 #################################################
 # Note: 
 # Although the code does not have 2dList function to output values,
@@ -137,12 +136,10 @@ def getInitialInformation(problem):
     # Given a problem, returns the initial constraints and the optimization function
     textList = problem.splitlines()
     optimizationFunction = textList[1]  
-
     # The last line of every problem is the lower bound, which is always going to be zero
     # This bound is not used in the simplex tableau
     initialConstraints = textList[3:-1]
     lowerBound = textList[-1]
-
     return (optimizationFunction,initialConstraints,lowerBound)
 
 def getKeyInformation(problem):
@@ -390,7 +387,6 @@ def getOptimizedValue(problem):
         return optimizedValue
     except:
         return "Solution not possible"
-
 
 #########################################################
 # Changes Minimization Function to Maximization Function

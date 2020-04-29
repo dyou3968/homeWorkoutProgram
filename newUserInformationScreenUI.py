@@ -39,12 +39,9 @@ class NewUserInformationScreen(Mode):
         self.backButton = self.image.crop((60,240,440,340))
         self.backButtonScaled = self.scaleImage(self.backButton,self.resizer)
 
-
-
 #############################################################################
-# Control Portion
+# Controller Portion
 #############################################################################
-
 
 ############################################################
 # From https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
@@ -59,7 +56,6 @@ class NewUserInformationScreen(Mode):
             self.selection = (row, col)
 
 ############################################################
-
         if self.selection == (0,1) :
             self.getUsername(event)
         elif self.selection == (1,1):
@@ -80,6 +76,8 @@ class NewUserInformationScreen(Mode):
             self.potentialOutcomesOfLogin()
 
     def potentialOutcomesOfLogin(self):
+        # If all the entries are filled in, the program will run 
+        # Else the program will ask for the user to fill in all entries
         if "Click here" not in self.getUserInformation():
             self.someEntriesEmpty = False
             self.addUserInformation("userProfile.txt")
@@ -88,47 +86,47 @@ class NewUserInformationScreen(Mode):
         else:
             self.someEntriesEmpty = True
 
-#############################################################################
 
-
-#############################################################################
+############################################################
 # Add User Information to Text File
 
 # Inspiration from: 
 # https://github.com/dyou3968/o-nlogn-/blob/master/SpeechRecog/todoListFunction.py
 # https://www.cs.cmu.edu/~112/notes/notes-strings.html#basicFileIO
-#############################################################################
+############################################################
 
     def textToFile(self,path,text):
+        # Gets the textfile in a writable way
         file = open(r"userProfile.txt","w+")
         file.write(text)
         file.close()
 
     def getUserList(self,path):
+        # Gets the list of all the users
         with open(path, "rt") as f:
             return f.read()
 
     def addUser(self,path,user):
+        # Adds the user to the text file
         users = self.getUserList("userProfile.txt")
         users += user + "\n"
         self.textToFile(path,users)
         return None
 
-    def addUserInformation(self,path):
-        return self.addUser(path,str(self.userInfo))
-
     def getUserInformation(self):
+        # Gets the inputed information into a list
         self.userInfo = [self.username,self.password,self.gender,
                         self.weight,self.age,self.activityLevel]
         return self.userInfo
 
+    def addUserInformation(self,path):
+        # Adds the inputed user to the user list
+        return self.addUser(path,str(self.userInfo))
 
-#############################################################################
 
-
-#############################################################################
+############################################################
 # User Inputs
-#############################################################################
+############################################################
 
     def getUsername(self, event):
         username = self.getUserInput('Enter your username')
@@ -201,7 +199,7 @@ class NewUserInformationScreen(Mode):
 # View Portion
 #############################################################################
 
-    def createTextBoxes(self,canvas):
+    def drawTextBoxes(self,canvas):
         self.textList = [["Username",self.username],["Password",self.password],["Gender",self.gender],
                         ["Weight",self.weight],["Age",self.age],["Activity Level", self.activityLevel]]
         for row in range(self.rows):
@@ -212,30 +210,23 @@ class NewUserInformationScreen(Mode):
                 inputBoxes.drawInputBoxes(canvas,text,getFontSize.fontSize(32),x1,x2,y1,y2,canvas)
                 canvas.create_rectangle(x1,y1,x2,y2, outline = "black")
 
-    def createNextBox(self,canvas):
+    def drawNextBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         cx,cy = (x1+x2)/2,(y1+y2)/2
         canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.nextButtonScaled))
 
-    def createBackBox(self,canvas):
+    def drawBackBox(self,canvas):
         (x1,x2,y1,y2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         cx,cy = (x1+x2)/2,(y1+y2)/2
         canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.backButtonScaled))
 
+    def drawNotAllEntriesFilled(self,canvas):
+        canvas.create_text(self.width/2,(9/10)*self.height, fill = "red", 
+        text = "Must enter all entries to continue", font = getFontSize.fontSize(30))
 
     def redrawAll(self,canvas):
-        self.createTextBoxes(canvas)
-        self.createNextBox(canvas)
-        self.createBackBox(canvas)
+        self.drawTextBoxes(canvas)
+        self.drawNextBox(canvas)
+        self.drawBackBox(canvas)
         if (self.someEntriesEmpty):
-            canvas.create_text(self.width/2,(9/10)*self.height, fill = "red", 
-                            text = "Must enter all entries to continue", font = getFontSize.fontSize(30))
-
-
-# class MyApp(ModalApp):
-#     def appStarted(self):
-#         self.NewUserInformationScreen = NewUserInformationScreen()
-#         self.setActiveMode(self.NewUserInformationScreen)
-#         self.timerDelay = 1000
-
-# app = MyApp(width=1000, height=800)
+            self.drawNotAllEntriesFilled(canvas)

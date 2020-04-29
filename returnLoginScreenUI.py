@@ -1,8 +1,8 @@
 #############################################################################
 """
 This is the new returning information screen where the user inputs their username
-and password. the program checks to see if the username and password are contained
-in the txt file, and if so takes that person's "profile". The new user login
+and password. The program checks to see if the username and password are contained
+in the text file, and if so takes that person's "profile". The new user login
 screen also maps to this page for the user to login.
 """
 #############################################################################
@@ -35,6 +35,11 @@ class ReturnLoginScreen(Mode):
         self.backButton = self.image.crop((60,240,440,340))
         self.backButtonScaled = self.scaleImage(self.backButton,self.resizer)
 
+
+#############################################################################
+# Controller Portion
+#############################################################################
+
 #########################################################
 # From https://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
 #########################################################
@@ -53,7 +58,6 @@ class ReturnLoginScreen(Mode):
             self.getUsername(event)
         elif self.selection == (1,1):
              self.getPassword(event)
-
         (backX1,backX2,backY1,backY2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         (nextX1,nextX2,nextY1,nextY2) = generixBoxDimensions.lowerRightBoxDimensions(self)
         if checkClickInBox.checkInBox(event.x, event.y,backX1,backX2,backY1,backY2):
@@ -62,6 +66,8 @@ class ReturnLoginScreen(Mode):
             self.potentialOutcomesOfLogin()
 
     def potentialOutcomesOfLogin(self):
+        # Enters the workout screen if the user has entered 
+        # All the information correctly
         if "Click here" not in self.getUsernameAndPassword():
             userData = self.getUserData("userProfile.txt") #2d List of the all the user data
             self.someEntriesEmpty = False
@@ -73,15 +79,14 @@ class ReturnLoginScreen(Mode):
                 self.correctPassword = False
             else:
                 self.removeOtherUsers("currentUser.txt")
-                self.addUserInformation("currentUser.txt", self.UserProfile(userData,self.username))          
+                self.addUserInformation("currentUser.txt", self.userProfile(userData,self.username))          
                 self.app.setActiveMode(self.app.MainScreen)
-                
         else:
             self.someEntriesEmpty = True
 
-#############################################################################
+#########################################################
 # Get User Inputs
-#############################################################################
+#########################################################
 
     def getUsername(self, event):
         username = self.getUserInput('Enter your username')
@@ -97,11 +102,7 @@ class ReturnLoginScreen(Mode):
         else:
             self.password = password
 
-
-#############################################################################
-
-
-#############################################################################
+#########################################################
 # Retrieves the user information from the txt file
 # First, it checks to see if the username is in the file
 # Then, it checks if the password matches the password on file
@@ -109,7 +110,7 @@ class ReturnLoginScreen(Mode):
 # Inspiration from:
 # https://github.com/dyou3968/o-nlogn-/blob/master/SpeechRecog/todoListFunction.py
 # https://www.cs.cmu.edu/~112/notes/notes-strings.html#basicFileIO
-#############################################################################
+#########################################################
 
     def getUserList(self,path):
         with open(path,'rt') as f:
@@ -140,6 +141,7 @@ class ReturnLoginScreen(Mode):
         return self.userInfo
 
     def checkIfUserInData(self,userData, username):
+        # Checks if the user is in the text file 'userProfile.txt'
         rows = len(userData)
         for row in range(rows):
             dataUsername = userData[row][0]
@@ -147,15 +149,9 @@ class ReturnLoginScreen(Mode):
                 return True
         return False
 
-    def checkPasswordMatch(self, userData, password):
-        rows = len(userData)
-        for row in range(rows):
-            dataPassword = userData[row][1]
-            if dataPassword == password:
-                return True
-        return False
-
-    def UserProfile(self,userData,username):
+    def userProfile(self,userData,username):
+        # Checks if the username entered matches the username in the 
+        # 'userProfile.txt' file
         rows = len(userData)
         for row in range(rows):
             dataUsername = userData[row][0]
@@ -163,13 +159,25 @@ class ReturnLoginScreen(Mode):
                 return userData[row]
         return None
 
+    def checkPasswordMatch(self, userData, password):
+        # Checks if the password entered matches the password in the
+        # 'userProfile.txt' file
+        rows = len(userData)
+        for row in range(rows):
+            dataPassword = userData[row][1]
+            if dataPassword == password:
+                return True
+        return False
+
     def addUser(self,path,user):
+        # Adds the user into the 'userProfile.txt' file
         users = self.getUserList(path)
         users += user + "\n"
         self.textToFile(path,users)
         return None
 
     def textToFile(self,path,text):
+        # Writes text in the file
         file = open(r"currentUser.txt","w+")
         file.write(text)
         file.close()
@@ -203,10 +211,7 @@ class ReturnLoginScreen(Mode):
         cx,cy = (x1+x2)/2,(y1+y2)/2
         canvas.create_image(cx, cy, image=ImageTk.PhotoImage(self.backButtonScaled))
 
-    def redrawAll(self,canvas):
-        self.drawTextBoxes(canvas)
-        self.drawNextBox(canvas)
-        self.drawBackBox(canvas)
+    def drawMessages(self,canvas):
         if (self.someEntriesEmpty):
             canvas.create_text(self.width/2,(9/10)*self.height, fill = "red",
                             text = "Must enter all entries to continue", font = getFontSize.fontSize(30))
@@ -217,15 +222,8 @@ class ReturnLoginScreen(Mode):
             canvas.create_text(self.width/2,(9/10)*self.height, fill = "red",
                             text = "Incorrect Password", font = getFontSize.fontSize(30))
 
-
-
-
-
-
-# class MyApp(ModalApp):
-#     def appStarted(self):
-#         self.ReturnLoginScreen = ReturnLoginScreen()
-#         self.setActiveMode(self.ReturnLoginScreen)
-#         self.timerDelay = 100
-
-# app = MyApp(width=1000, height=800)
+    def redrawAll(self,canvas):
+        self.drawTextBoxes(canvas)
+        self.drawNextBox(canvas)
+        self.drawBackBox(canvas)
+        self.drawMessages(canvas)

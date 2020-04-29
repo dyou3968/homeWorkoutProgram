@@ -1,14 +1,14 @@
 #############################################################################
 """
-This program scrapes the website for all the exercises and returns the 
-information as a dictionary.
+This program scrapes the travel strong website for all the exercises 
+and returns the information as a dictionary.
 """
 #############################################################################
 
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 
-# Beautiful Soup Documentation Taken from 
+# Beautiful Soup Documentation taken from 
 # https://www.crummy.com/software/BeautifulSoup/bs4/doc/#searching-by-css-class
 
 # url Request taken from

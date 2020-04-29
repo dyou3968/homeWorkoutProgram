@@ -20,6 +20,10 @@ class NewLoginScreen(Mode):
         self.backButton = self.image.crop((60,240,440,340))
         self.backButtonScaled = self.scaleImage(self.backButton,self.resizer)
 
+#############################################################################
+# Controller Portion
+#############################################################################
+
     def mousePressed(self, event):
         (backX1,backX2,backY1,backY2) = generixBoxDimensions.lowerLeftBoxDimensions(self)
         (nextX1,nextX2,nextY1,nextY2) = generixBoxDimensions.lowerRightBoxDimensions(self)
@@ -27,7 +31,6 @@ class NewLoginScreen(Mode):
             self.app.setActiveMode(self.app.StartScreen)
         if checkClickInBox.checkInBox(event.x, event.y,nextX1,nextX2,nextY1,nextY2):
             self.app.setActiveMode(self.app.NewUserInformationScreen)
-
 
 #############################################################################
 # View Portion
