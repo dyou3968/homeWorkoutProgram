@@ -17,7 +17,7 @@ class StartScreen(Mode):
     def appStarted(self):
         self.newUser = "New User"
         self.returningUser = "Returning User"
-        self.message = "Stay Fit"
+        self.message = "HomeFit"
         self.description = '''A home workout program designed \n to help you stay fit during quaratine'''
         self.creator = 'By David You'
 

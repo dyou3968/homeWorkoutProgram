@@ -2,13 +2,13 @@
 Project Proposal:
 
 ProjectDescription:
-    Name: homeWorkoutProgramGenerator
+    Name: homeFit
     Description: 
-    My goal for this project is to implement a program that gives the user a solid workout given the budget, time, and space constraints. 
-    Most of the workouts will simply require some space to do bodyweight exercises, as most of the users will be in that category.
-    My program will have different workouts for specific body parts, and it will create a two-week layout for exercises that users
-    will repeat for a certain duration of time (tbd). Ideally, the user would be able to run this program, and have a solid workout 
-    plan for the next two weeks.
+    My goal for this project is to implement a program that gives the user a solid workout given the user attributes and inputed constraints.
+    The workouts consist of simple bodyweight exercises that anyone can do, and the user chooses a category that they would like to focus on.
+    Given an intensity and time constraint, the program will generate an optimized workout so that the user can burn calories and stay in shape
+    using the simplex algorithm. If a workout is too easy, the program will also adjust and make it slightly harder each time.
+
 
 Competetive Analysis:
         After taking a look at workout apps on the App Store, I realized that my project would have a lot of competition. There are many companies 
@@ -73,3 +73,9 @@ TP2 Update:
         Number of constraints based on goals of the user
         Ability for user to see exercise descriptions and click on youtube links
         Timing Feature that adjusts the intensity of the workout based on performance
+
+TP3 Update:
+    I have changed the goal of the program so that it maximizes the number of calories burned of the user.
+    I have also added a timer feature, a pause and end workout option, and an intensity changer if the user 
+    finishes the workout with too much time left. I have also included animation to the start screen, and 
+    some UI improvements.
